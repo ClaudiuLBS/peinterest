@@ -1,0 +1,34 @@
+NotRedditYet
+
+User
+
+Bookmark
+  - (pk) id
+  - (fk) user_id
+  - titlu
+  - descriere
+  - image
+  - date_created
+  - upvotes 
+
+UserUpvote
+  - (fk) user_id
+  - (fk) bookmark_id
+  - rating (-1/0/1) 
+
+Comment:
+  - (pk) id
+  - (fk) bookmark_id
+  - (fk) user_id
+  - text
+  - date_created
+  - image
+
+Category
+  - (pk) id
+  - (fk) user_id
+  - name
+
+SavedBookmark
+  - (fk) category_id
+  - (fk) bookmark_id

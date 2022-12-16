@@ -15,8 +15,10 @@ namespace project.net.Models
         public string? Description { get; set; }
         public DateTime Date { get; set; }
         public string Image { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
         //public int UpVotes { get; set; } ??
-        //teoretic am putea avea si asa ca sa vedem cine a dat like/dislike
+        //teoretic am putea avea si asa ca sa vedem cine a dat like/dislike, probabil mai ineficient
         //public ICollection<Upvotes> UpVotes {get; set;} 
        
         

@@ -11,16 +11,25 @@ namespace project.net.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<BookmarkCategory>().HasKey(bc => new
-            {
+            builder.Entity<BookmarkCategory>().HasKey(bc => new {
                 bc.BookmarkId,
                 bc.CategoryId
             });
-
-            builder.Entity<BookmarkCategory>().HasOne(bc => bc.Bookmark).WithMany(bc => bc.BookmarkCategories)
+            builder.Entity<BookmarkCategory>().HasOne(bc => bc.Bookmark).WithMany(b => b.BookmarkCategories)
                 .HasForeignKey(bc => bc.BookmarkId);
-            builder.Entity<BookmarkCategory>().HasOne(bc => bc.Category).WithMany(bc => bc.BookmarkCategories)
+            builder.Entity<BookmarkCategory>().HasOne(bc => bc.Category).WithMany(c => c.BookmarkCategories)
                 .HasForeignKey(bc => bc.CategoryId);
+
+
+            builder.Entity<Upvote>().HasKey(u => new {
+                u.UserId,
+                u.BookmarkId
+            });
+            builder.Entity<Upvote>().HasOne(u => u.Bookmark).WithMany(b => b.Upvotes)
+                .HasForeignKey(u => u.BookmarkId);
+            builder.Entity<Upvote>().HasOne(u => u.User).WithMany(u => u.Upvotes)
+                .HasForeignKey(u => u.UserId);
+
             base.OnModelCreating(builder);
         }
 

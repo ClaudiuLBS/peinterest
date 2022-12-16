@@ -27,6 +27,8 @@ namespace project.net.Models
         public virtual ICollection<Comment>? Comments { get; set; }  
 
         public virtual ICollection<BookmarkCategory>? BookmarkCategories { get; set; }
+
+        public virtual ICollection<Upvote>? Upvotes { get; set; }
         //public int UpVotes { get; set; } ??
         //teoretic am putea avea si asa ca sa vedem cine a dat like/dislike, probabil mai ineficient
         //public ICollection<Upvotes> UpVotes {get; set;} 

@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace project.net.Data.Migrations
+namespace project.net.Migrations
 {
-    public partial class BmCategCommSavedBmUpvote : Migration
+    public partial class _2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

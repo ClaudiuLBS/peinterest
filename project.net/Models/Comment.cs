@@ -5,14 +5,14 @@ namespace project.net.Models
     public class Comment
     {
         [Key]
-        public int CommentId { get; set; }
+        public int Id { get; set; }
+        public int BookmarkId { get; set; }
+        public int UserId { get; set; }
         [Required(ErrorMessage = "Continutul este obligatoriu")]
         public string Content { get; set; }
         public DateTime Date { get; set; }
-        public int ArticleId { get; set; }
-        public virtual Bookmark Bookmark { get; set; }
+        public string Image { get; set; }
+        
 
-     // public virtual User user {get; set;}
-     // image ?
     }
 }

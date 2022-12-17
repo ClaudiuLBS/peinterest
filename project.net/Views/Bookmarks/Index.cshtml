@@ -1,0 +1,14 @@
+﻿@foreach (var bookmark in ViewBag.Bookmarks)
+{
+    <div class="card" style="width: 18rem;">
+        <img src="@bookmark.image" class="card-img-top" alt="...">
+
+        <div class="card-body">
+
+            <h3 class="card-title">@bookmark.Title</h3>
+
+            <p class="card-text">@bookmark.Description</p>
+            <a href="/Bookmarks/Show/@bookmark.Id">Afisare Bookmark </a>
+        </div>
+    </div>
+}

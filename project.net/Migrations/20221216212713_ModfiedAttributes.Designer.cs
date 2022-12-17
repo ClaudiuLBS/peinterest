@@ -12,8 +12,8 @@ using project.net.Data;
 namespace project.net.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221216165905_3")]
-    partial class _3
+    [Migration("20221216212713_ModfiedAttributes")]
+    partial class ModfiedAttributes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

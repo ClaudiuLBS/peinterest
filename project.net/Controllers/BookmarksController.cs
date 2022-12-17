@@ -19,6 +19,7 @@ namespace project.net.Controllers
             db = context;
         }
         // Afisam pe pagina principala toate bookmarkurile in functie de popularitate
+        [Route("")]
         public IActionResult Index()
         {
             var bookmarks = db.Bookmarks;
@@ -50,10 +51,7 @@ namespace project.net.Controllers
 
             return View();
         }
-
-        public IActionResult (int id)
-
-
+        
 
 
     }

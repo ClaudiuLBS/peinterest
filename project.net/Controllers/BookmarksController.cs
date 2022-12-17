@@ -29,27 +29,28 @@ namespace project.net.Controllers
         }
 
         // Afisam un singur articol in functie de id-ul sau
-        // impreuna cu comentariile si numarul de upvote-uri
-
+        // impreuna cu comentariile si numarul de upvote-
+        [Route("b/{id:int}")]
         public IActionResult Show(int id)
         {
-            //afisam primul comm
-            var bookmark = db.Bookmarks.Include("Comments")
-                                        .Where(bm => bm.Id == id)
-                                        .First();
+            ////afisam primul comm
+            //var bookmark = db.Bookmarks.Include("Comments")
+            //                            .Where(bm => bm.Id == id)
+            //                            .First();
 
-            ViewBag.Bookmark = bookmark;
-            ViewBag.Comments = bookmark.Comments;
+            //ViewBag.Bookmark = bookmark;
+            //ViewBag.Comments = bookmark.Comments;
 
-            return View();
+            return Content(id.ToString());
         }
 
         // Creem bookmarkul + optiuni
 
-        public IActionResult New()
+        [HttpPost]
+        public IActionResult New(Bookmark bookmark)
         {   
 
-            return View();
+            return Content("ok");
         }
         
 

@@ -1,0 +1,22 @@
+﻿@model project.net.Models.Bookmark
+
+<div>
+    @using (Html.BeginForm(actionName: "New", controllerName: "Bookmarks", method: FormMethod.Post))
+    {
+        @Html.Label("Title", "Titlu Articol")
+        <br />
+        @Html.TextBox("Title", null, new { @class = "form-control" })
+        @Html.ValidationMessageFor(b => b.Title, null, new { @class = "text-danger" })
+        <br /><br />
+        @Html.Label("Description", "Descriere")
+        <br />
+        @Html.TextArea("Description", null, new { @class = "form-control" })
+        @Html.ValidationMessageFor(
+            b => b.Description, 
+            null, 
+            new { @class = "text-danger" }
+        )
+        <br /><br />
+        <button class="btn btn-success" type="submit">Submit</button>
+    }
+</div>

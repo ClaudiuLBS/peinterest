@@ -20,37 +20,31 @@ namespace project.net.Controllers
         }
         // Afisam pe pagina principala toate bookmarkurile in functie de popularitate
         [Route("")]
-        public IActionResult Index()
+        public IActionResult Index([FromQuery(Name = "bookmarkId")] string? bookmarkId)
         {
-            var bookmarks = db.Bookmarks;
-
-            ViewBag.Bookmarks = bookmarks;
-            return View();
+            Bookmark bookmark = new();
+            if (bookmarkId != null)
+                return Content(bookmarkId);
+            else
+                return View(bookmark);
         }
 
-        // Afisam un singur articol in functie de id-ul sau
-        // impreuna cu comentariile si numarul de upvote-
-        [Route("b/{id:int}")]
-        public IActionResult Show(int id)
-        {
-            ////afisam primul comm
-            //var bookmark = db.Bookmarks.Include("Comments")
-            //                            .Where(bm => bm.Id == id)
-            //                            .First();
-
-            //ViewBag.Bookmark = bookmark;
-            //ViewBag.Comments = bookmark.Comments;
-
-            return Content(id.ToString());
-        }
-
+       
         // Creem bookmarkul + optiuni
 
         [HttpPost]
+        [Route("/new-bookmark")]
         public IActionResult New(Bookmark bookmark)
-        {   
-
-            return Content("ok");
+        {
+            if (ModelState.IsValid)
+            {
+                bookmark.CreatedAt = DateTime.Now;
+                db.Bookmarks.Add(bookmark);
+                db.SaveChanges();
+                TempData["message"] = "Bookmarkul a fost adaugat";
+                return RedirectToAction("Index");
+            }
+            return View("Index", bookmark);
         }
         
 

@@ -3,19 +3,15 @@
 <div>
     @using (Html.BeginForm(actionName: "New", controllerName: "Bookmarks", method: FormMethod.Post))
     {
-        @Html.Label("Title", "Titlu Articol")
+        @Html.LabelFor(b => b.Title, "Titlu Bookmark")
         <br />
-        @Html.TextBox("Title", null, new { @class = "form-control" })
+        @Html.TextBoxFor(b => b.Title, new { @class = "form-control" })
         @Html.ValidationMessageFor(b => b.Title, null, new { @class = "text-danger" })
         <br /><br />
-        @Html.Label("Description", "Descriere")
+        @Html.LabelFor(b => b.Description, "Descriere")
         <br />
-        @Html.TextArea("Description", null, new { @class = "form-control" })
-        @Html.ValidationMessageFor(
-            b => b.Description, 
-            null, 
-            new { @class = "text-danger" }
-        )
+        @Html.TextAreaFor(b => b.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(b => b.Description, null, new { @class = "text-danger" })
         <br /><br />
         <button class="btn btn-success" type="submit">Submit</button>
     }

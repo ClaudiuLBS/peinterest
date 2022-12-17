@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace project.net.Migrations
 {
-    public partial class _1 : Migration
+    public partial class ModfiedAttributes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -229,25 +229,25 @@ namespace project.net.Migrations
                 name: "Upvotes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    BookmarkId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BookmarkId = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Upvotes", x => x.Id);
+                    table.PrimaryKey("PK_Upvotes", x => new { x.UserId, x.BookmarkId });
                     table.ForeignKey(
                         name: "FK_Upvotes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Upvotes_Bookmarks_BookmarkId",
                         column: x => x.BookmarkId,
                         principalTable: "Bookmarks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -342,11 +342,6 @@ namespace project.net.Migrations
                 name: "IX_Upvotes_BookmarkId",
                 table: "Upvotes",
                 column: "BookmarkId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Upvotes_UserId",
-                table: "Upvotes",
-                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

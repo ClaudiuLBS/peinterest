@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using project.net.Models;
 using project.net.Data;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

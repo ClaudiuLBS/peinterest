@@ -13,11 +13,6 @@ namespace project.net.Models
 
         public virtual ICollection<Comment>? Comments { get; set; }
         
-        public virtual ICollection<Upvote>? Upvotes { get; set; }
-
-        public string? FirstName { get; set; }
-
-        public string? LastName { get; set; }
-
+        public virtual ICollection<Upvote>? Upvotes { get; set; }   
     }
 }

@@ -1,5 +1,22 @@
-﻿@model project.net.ViewModels.CreateBookmark
+﻿@model project.net.ViewModels.ListAndCreateBookmark
 
-<div>
-    @Html.Partial("CreateBookmark", Model)
+<style>
+    .content {
+        display: flex;
+        -moz-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        -o-flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+</style>
+<div class="content">
+    @if (User.Identity.IsAuthenticated)
+    {
+        @await Html.PartialAsync("CreateBookmark", Model.CreateBookmark)
+    }
+    @foreach (var bookmark in Model.Bookmarks)
+    {
+        @await Html.PartialAsync("ListBookmark", bookmark)
+    }
 </div>

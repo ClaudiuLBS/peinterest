@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using project.net.Models;
 using project.net.Data;
 using Humanizer;
@@ -21,28 +22,49 @@ namespace project.net.Controllers
             db = context;
             webHostEnvironment = host;
         }
+
+        private ListAndCreateBookmark MakeListAndCreateBookmark(CreateBookmark? createBookmark)
+        {
+            IEnumerable<Bookmark>? bookmarks = db.Bookmarks;
+
+            ListAndCreateBookmark listAndCreateBookmark = new()
+            {
+                CreateBookmark = createBookmark ?? new CreateBookmark(),
+                Bookmarks = bookmarks
+            };
+
+            return listAndCreateBookmark;
+        }
+
         // Afisam pe pagina principala toate bookmarkurile in functie de popularitate
         [Route("")]
         public IActionResult Index([FromQuery(Name = "bookmarkId")] string? bookmarkId)
         {
-            CreateBookmark createBookmark = new();
+
+            var listAndCreateBookmark = MakeListAndCreateBookmark(null);
+            
             if (bookmarkId != null)
                 return Content(bookmarkId);
             else
-                return View(createBookmark);
+                return View(listAndCreateBookmark);
         }
 
-       
+
         // Creem bookmarkul + optiuni
 
+        [Authorize]
         [HttpPost]
         [Route("")]
         public IActionResult New(CreateBookmark createBookmark)
         {
             if (!ModelState.IsValid || createBookmark.File == null || createBookmark.Bookmark == null)
-                return View("Index", createBookmark);
+                return View("Index", MakeListAndCreateBookmark(createBookmark));
+            
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            createBookmark.Bookmark.UserId = userId;
 
             createBookmark.Bookmark.CreatedAt = DateTime.Now;
+
             string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
             string fileName = Guid.NewGuid() + "_" + createBookmark.File.FileName;
             string filePath = Path.Combine(uploadsFolder, fileName);
@@ -51,6 +73,7 @@ namespace project.net.Controllers
 
             db.Bookmarks?.Add(createBookmark.Bookmark);
             db.SaveChanges();
+
             TempData["message"] = "Bookmarkul a fost adaugat";
             return RedirectToAction("Index");
         }

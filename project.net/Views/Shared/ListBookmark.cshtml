@@ -1,1 +1,9 @@
-﻿<div>not white people in paris</div>
+﻿@model project.net.Models.Bookmark
+
+<div class="card" style="width: 18rem;">
+    <img src="/images/@Model.Image" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Title</h5>
+        <p class="card-text">@Model.Description</p>
+    </div>
+</div>

@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using project.net.ViewModels;
 
 
 namespace project.net.Controllers
@@ -59,7 +58,7 @@ namespace project.net.Controllers
             bookmark.File?.CopyTo(new FileStream(filePath, FileMode.Create));
             bookmark.Image = fileName;
 
-            db.Bookmarks?.Add(bookmark);
+            db.Bookmarks.Add(bookmark);
             db.SaveChanges();
             
             TempData["message"] = "Bookmarkul a fost adaugat";

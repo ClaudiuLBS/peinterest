@@ -20,4 +20,5 @@
     {
         @await Html.PartialAsync("ListBookmark", bookmark)
     }
+    @await Html.PartialAsync("BookmarkModal", (IEnumerable<Bookmark>)ViewBag.Bookmarks)
 </div>

@@ -16,37 +16,26 @@ namespace project.net.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly UserManager<AppUser> userManager;
 
-        public BookmarksController(ApplicationDbContext context, IWebHostEnvironment host)
+        public BookmarksController(
+            ApplicationDbContext context, 
+            IWebHostEnvironment host,
+            UserManager<AppUser> userManager)
         {
-            db = context;
-            webHostEnvironment = host;
-        }
-
-        private ListAndCreateBookmark MakeListAndCreateBookmark(CreateBookmark? createBookmark)
-        {
-            IEnumerable<Bookmark>? bookmarks = db.Bookmarks;
-
-            ListAndCreateBookmark listAndCreateBookmark = new()
-            {
-                CreateBookmark = createBookmark ?? new CreateBookmark(),
-                Bookmarks = bookmarks
-            };
-
-            return listAndCreateBookmark;
+            this.db = context;
+            this.webHostEnvironment = host;
+            this.userManager = userManager;
         }
 
         // Afisam pe pagina principala toate bookmarkurile in functie de popularitate
         [Route("")]
-        public IActionResult Index([FromQuery(Name = "bookmarkId")] string? bookmarkId)
+        public IActionResult Index()
         {
+            Bookmark bookmark = new();
+            ViewBag.Bookmarks = db.Bookmarks!;
 
-            var listAndCreateBookmark = MakeListAndCreateBookmark(null);
-            
-            if (bookmarkId != null)
-                return Content(bookmarkId);
-            else
-                return View(listAndCreateBookmark);
+            return View(bookmark);
         }
 
 
@@ -55,25 +44,24 @@ namespace project.net.Controllers
         [Authorize]
         [HttpPost]
         [Route("")]
-        public IActionResult New(CreateBookmark createBookmark)
+        public IActionResult New(Bookmark bookmark)
         {
-            if (!ModelState.IsValid || createBookmark.File == null || createBookmark.Bookmark == null)
-                return View("Index", MakeListAndCreateBookmark(createBookmark));
-            
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            createBookmark.Bookmark.UserId = userId;
 
-            createBookmark.Bookmark.CreatedAt = DateTime.Now;
+            bookmark.UserId = userManager.GetUserId(User);
+            bookmark.CreatedAt = DateTime.Now;
 
-            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
-            string fileName = Guid.NewGuid() + "_" + createBookmark.File.FileName;
-            string filePath = Path.Combine(uploadsFolder, fileName);
-            createBookmark.File.CopyTo(new FileStream(filePath, FileMode.Create));
-            createBookmark.Bookmark.Image = fileName;
+            if (!ModelState.IsValid)
+                return View("Index", bookmark);
 
-            db.Bookmarks?.Add(createBookmark.Bookmark);
+            var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+            var fileName = Guid.NewGuid() + "_" + bookmark.File?.FileName;
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            bookmark.File?.CopyTo(new FileStream(filePath, FileMode.Create));
+            bookmark.Image = fileName;
+
+            db.Bookmarks?.Add(bookmark);
             db.SaveChanges();
-
+            
             TempData["message"] = "Bookmarkul a fost adaugat";
             return RedirectToAction("Index");
         }

@@ -1,9 +1,19 @@
 ﻿@model project.net.Models.Bookmark
 
-<div class="card" style="width: 18rem;">
-    <img src="/images/@Model.Image" class="card-img-top" alt="...">
+<style>
+    .card-img {
+        object-fit: cover;
+        height: 100%;
+    }
+    .card {
+        min-height: 35vh !important;
+        margin: 20px;
+    }
+</style>
+<a href="/?bookmarkId=@Model.Id" class="card" style="width: 18rem;">
+    <img src="/images/@Model.Image" class="card-img" alt="not found">
     <div class="card-body">
         <h5 class="card-title">@Model.Title</h5>
         <p class="card-text">@Model.Description</p>
     </div>
-</div>
+</a>

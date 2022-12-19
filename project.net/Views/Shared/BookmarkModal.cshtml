@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Bookmark>
+@{
+    string? bookmarkId = Context.Request.Query["bookmarkId"];
+    var bookmark = (
+        from b in Model 
+        where b.Id.ToString() == bookmarkId 
+        select b
+    ).FirstOrDefault();
+}
+<style>
+    .my-modal {
+        position: absolute;
+        width: 60vw;
+        height: 70vh;
+        background: #ffffff;
+    }
+    .modal-img {
+        width: 20vw;
+        height: 20vw;
+        object-fit: cover;
+    }
+</style>
+
+@if (bookmark != null)
+{
+    <div class="modal-content my-modal">
+        <div class="modal-header">
+            <h5>@bookmark.Title</h5>
+            <h5>
+                @if (bookmark.User?.UserName != null)
+                {
+                    @bookmark.User.UserName
+                }
+            </h5>
+            <button type="button" onclick="closeBookmarkModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>@bookmark.Description</p>
+            <img class="modal-img" src="/images/@bookmark.Image" alt="not found" />
+        </div>
+        <div class="modal-footer">
+            <button type="button" onclick="closeBookmarkModal()" class="btn btn-secondary">Close</button>
+        </div>
+    </div>
+}

@@ -9,7 +9,6 @@ namespace project.net.Models
         public int? Id { get; set; }
 
         public string? UserId { get; set; } 
-        [ForeignKey("UserId")]
         public virtual AppUser? User { get; set; }
 
         [Required(ErrorMessage = "Numele categoriei este obligatoriu")]

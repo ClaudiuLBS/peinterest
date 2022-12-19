@@ -12,7 +12,7 @@ using project.net.Data;
 namespace project.net.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221218094616_1")]
+    [Migration("20221219191758_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

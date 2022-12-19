@@ -10,7 +10,6 @@ namespace project.net.Models
         public int? Id { get; set; }
 
         public string? UserId { get; set; }
-        [ForeignKey("UserId")]
         public virtual AppUser? User { get; set; }
      
         [Required(ErrorMessage = "Titlul este obligatoriu")]
@@ -23,6 +22,10 @@ namespace project.net.Models
         public DateTime? CreatedAt { get; set; }
 
         public string? Image { get; set; }
+
+        [Required(ErrorMessage = "Imaginea e obligatorie")]
+        [NotMapped]
+        public IFormFile? File { get; set; }
 
         public virtual ICollection<Comment>? Comments { get; set; }  
 

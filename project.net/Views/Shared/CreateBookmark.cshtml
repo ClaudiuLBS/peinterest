@@ -1,32 +1,35 @@
 ﻿@model Bookmark
 
-<div>
-    @using (Html.BeginForm(
-        actionName: "New", 
-        controllerName: "Bookmarks",
-        method: FormMethod.Post, 
-        new {enctype="multipart/form-data"}
-    )) {
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                @Html.LabelFor(b => b.Title, "Titlu", new { @class = "card-title"})
-                <br/>
-                @Html.TextBoxFor(b => b.Title, new { @class = "form-control" })
-                @Html.ValidationMessageFor(b => b.Title, null, new { @class = "text-danger" })
-                <br />
-                @Html.LabelFor(b => b.Description, "Descriere", new { @class = "card-text"})
-                <br/>
-                @Html.TextAreaFor(b => b.Description, new { @class = "form-control" })
-                @Html.ValidationMessageFor(b => b.Description, null, new { @class = "text-danger" })
-                <br />
-                <div class="form-control">
-                    <label asp-for="File">Image</label>
-                    <input asp-for="File" class="form-control" accept="image/png, image/gif, image/jpeg" />
-                </div>
-                @Html.ValidationMessageFor(b => b.File, null, new { @class = "text-danger" })
-                <br/>
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </div>
-        </div>
+<style>
+    .card-container {
+        background: #f7f7f7;
     }
-</div>
+</style>
+@using (Html.BeginForm(
+    actionName: "New", 
+    controllerName: "Bookmarks",
+    method: FormMethod.Post, 
+    new {enctype="multipart/form-data"}
+)) {
+    <div class="card card-container" style="width: 18rem;">
+        <div class="card-body">
+            @Html.LabelFor(b => b.Title, "Titlu", new { @class = "card-title"})
+            <br/>
+            @Html.TextBoxFor(b => b.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(b => b.Title, null, new { @class = "text-danger" })
+            <br />
+            @Html.LabelFor(b => b.Description, "Descriere", new { @class = "card-text"})
+            <br/>
+            @Html.TextAreaFor(b => b.Description, new { @class = "form-control" })
+            @Html.ValidationMessageFor(b => b.Description, null, new { @class = "text-danger" })
+            <br />
+            <div class="form-control">
+                <label asp-for="File">Image</label>
+                <input asp-for="File" class="form-control" accept="image/png, image/gif, image/jpeg" />
+            </div>
+            @Html.ValidationMessageFor(b => b.File, null, new { @class = "text-danger" })
+            <br/>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </div>
+}

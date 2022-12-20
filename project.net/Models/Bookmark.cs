@@ -34,7 +34,7 @@ namespace project.net.Models
         public IFormFile? File { get; set; }
 
         [NotMapped]
-        public Comment AddedComment { get; set; }
+        public Comment? AddedComment { get; set; }
 
     }
 }

@@ -48,6 +48,13 @@ namespace project.net.Data
                 .WithMany(u => u.Upvotes)
                 .HasForeignKey(u => u.UserId);
 
+            builder.Entity<Bookmark>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Bookmarks);
+
+            builder.Entity<Bookmark>()
+                .HasMany(b => b.Comments)
+                .WithOne(c => c.Bookmark);
         }
     }
 }

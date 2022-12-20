@@ -23,3 +23,18 @@ const closeBookmarkModal = () => {
     const newUrl = removeURLParameter(currentUrl, "bookmarkId");
     window.location.href = newUrl;
 }
+
+function getHeight() {
+    divElement = document.querySelector("#img-container");
+
+    elemHeight = divElement.offsetHeight;
+
+    document.querySelector(".modal-img").style.maxHeight = elemHeight + "px";
+    commSection = document.getElementById("comment-section");
+    //commSection.style.height = elemHeight * 0.4 + "px";
+    console.log(commSection);
+}
+window.onload = () => {
+    getHeight();
+}
+window.onresize = getHeight;

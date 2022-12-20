@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Rubik&display=swap');
+* {
+    font-family: rubik;
+}
 html {
   font-size: 14px;
 }
@@ -20,4 +24,27 @@ body {
 a {
     text-decoration: none;
     color: black;
+}
+
+textarea {
+    resize: none;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fff
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #aaa;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

@@ -32,7 +32,11 @@ namespace project.net.Controllers
         public IActionResult Index()
         {
             Bookmark bookmark = new();
-            ViewBag.Bookmarks = db.Bookmarks!;
+            ViewBag.Bookmarks = db.Bookmarks
+                .Include("User")
+                .Include("Comments")
+                .Include("Comments.User")
+                .ToList();
 
             return View(bookmark);
         }
@@ -45,6 +49,11 @@ namespace project.net.Controllers
         [Route("")]
         public IActionResult New(Bookmark bookmark)
         {
+            ViewBag.Bookmarks = db.Bookmarks
+                .Include("User")
+                .Include("Comments")
+                .Include("Comments.User")
+                .ToList();
 
             bookmark.UserId = userManager.GetUserId(User);
             bookmark.CreatedAt = DateTime.Now;
@@ -62,6 +71,24 @@ namespace project.net.Controllers
             db.SaveChanges();
             
             TempData["message"] = "Bookmarkul a fost adaugat";
+            return RedirectToAction("Index");
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("/delete-bookmark/<bookmarkId:int>")]
+        public IActionResult Delete(int bookmarkId)
+        {   
+             Bookmark bookmark = db.Bookmarks
+                 .Include("Comments")
+                 .First(b => b.Id == bookmarkId);
+
+            if (userManager.GetUserId(User) != bookmark.UserId)
+                return RedirectToAction("Index");
+
+            db.Bookmarks.Remove(bookmark);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
     }

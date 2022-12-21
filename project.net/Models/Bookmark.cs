@@ -35,6 +35,6 @@ namespace project.net.Models
 
         [NotMapped]
         public Comment? AddedComment { get; set; }
-
+        
     }
 }

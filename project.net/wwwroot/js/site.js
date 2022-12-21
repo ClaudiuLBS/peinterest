@@ -24,16 +24,18 @@ const closeBookmarkModal = () => {
     window.location.href = newUrl;
 }
 
-function getHeight() {
+const getHeight = () => {
     divElement = document.querySelector("#img-container");
-
+    if (!divElement) return;
     elemHeight = divElement.offsetHeight;
 
     document.querySelector(".modal-img").style.maxHeight = elemHeight + "px";
-    commSection = document.getElementById("comment-section");
-    //commSection.style.height = elemHeight * 0.4 + "px";
-    console.log(commSection);
 }
+
+const handleRating = (userId, value, bookmarkId) => {
+    fetch()
+}
+
 window.onload = () => {
     getHeight();
 }

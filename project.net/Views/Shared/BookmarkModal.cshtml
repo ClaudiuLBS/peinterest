@@ -91,6 +91,7 @@
         </div>
         <div id="img-container">
             <img src="/images/@bookmark.Image" class="modal-img" alt="not found" />
+            @await Html.PartialAsync("RatingComponent", bookmark)
         </div>
         <div id="right-modal">
             <div>
@@ -119,7 +120,6 @@
         {
             <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-bookmarkId="@bookmark.Id">
                 <button type="submit">delete this shit</button>
-
             </form>
         }
         -->

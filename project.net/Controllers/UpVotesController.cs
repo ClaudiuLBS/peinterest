@@ -26,7 +26,7 @@ namespace project.net.Controllers
         [Authorize]
         [HttpPost]
         [Route("/upvote")]
-        public IActionResult New(Upvote upvote)
+        public IActionResult New([FromBody]Upvote upvote)
         {
             Upvote? currentUpvote =
                 db.Upvotes
@@ -34,12 +34,16 @@ namespace project.net.Controllers
                     .Where(uv => uv.BookmarkId == upvote.BookmarkId)
                     .FirstOrDefault();
 
-            if (currentUpvote != null && currentUpvote.Rating == upvote.Rating)
-                upvote.Rating = 0;
+            if (currentUpvote != null)
+            {
+                currentUpvote.Rating = currentUpvote.Rating == upvote.Rating ? 0 : upvote.Rating;
+                db.Upvotes.Update(currentUpvote);
+                db.SaveChanges();
+                return new JsonResult(currentUpvote);
+            }
 
             db.Upvotes.Add(upvote);
             db.SaveChanges();
-
             return new JsonResult(upvote);
         }
     }

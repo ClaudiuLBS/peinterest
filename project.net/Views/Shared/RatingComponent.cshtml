@@ -1,6 +1,5 @@
 ﻿@model Bookmark
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject UserManager<AppUser> userManager
 
 @{
@@ -16,7 +15,7 @@
 <div>
     @if (userId != null)
     {
-        <i class="bi bi-hand-thumbs-up upvote" onclick="addUpvote(@userId, @Model.Id, 1)"></i>
-        <i class="bi bi-hand-thumbs-down upvote" onclick="addUpvote(1,@Model.Id, -1)"></i>
+        <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+        <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
     }
 </div>

@@ -1,0 +1,18 @@
+﻿@model Bookmark
+
+@using (Html.BeginForm(
+    "New",
+    "Comments",
+    new { bookmarkId = Model.Id},
+    FormMethod.Post,
+    null,
+   new { enctype = "multipart/form-data", style = "display: flex; width:100%" }
+)) { 
+    <div style="flex: 1">
+        @Html.TextAreaFor(b => b.AddedComment.Content, new { @class = "form-control", @rows = 2 })
+        @Html.ValidationMessageFor(b => b.AddedComment.Content, null, new { @class = "text-danger" })
+    </div>
+    <button class="btn" style="float: right" type="submit">
+        <i class="bi bi-send-fill" style="font-size: 24px"></i>
+    </button>
+}

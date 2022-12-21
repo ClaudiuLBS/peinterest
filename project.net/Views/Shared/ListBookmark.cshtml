@@ -1,9 +1,26 @@
-﻿@model project.net.Models.Bookmark
+﻿@model Bookmark
 
-<div class="card" style="width: 18rem;">
-    <img src="/images/@Model.Image" class="card-img-top" alt="...">
+<style>
+    .card-img {
+        object-fit: cover;
+        height: 250px;
+    }
+    .card {
+        height: 400px !important;
+        margin: 20px;
+    }
+    .card-text {
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+    }
+</style>
+<a href="/?bookmarkId=@Model.Id" class="card" style="width: 18rem;">
+    <img src="/images/@Model.Image" class="card-img" alt="not found">
     <div class="card-body">
         <h5 class="card-title">@Model.Title</h5>
-        <p class="card-text">@Model.Description</p>
+        <p class="card-text" >@Model.Description</p>
+        <p class="card-text">@Model.User.UserName</p>
     </div>
-</div>
+</a>

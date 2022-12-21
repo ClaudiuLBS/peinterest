@@ -10,7 +10,6 @@ namespace project.net.Models
         public int? Id { get; set; }
 
         public string? UserId { get; set; }
-        [ForeignKey("UserId")]
         public virtual AppUser? User { get; set; }
      
         [Required(ErrorMessage = "Titlul este obligatoriu")]
@@ -29,12 +28,13 @@ namespace project.net.Models
         public virtual ICollection<BookmarkCategory>? BookmarkCategories { get; set; }
 
         public virtual ICollection<Upvote>? Upvotes { get; set; }
-        //public int UpVotes { get; set; } ??
-        //teoretic am putea avea si asa ca sa vedem cine a dat like/dislike, probabil mai ineficient
-        //public ICollection<Upvotes> UpVotes {get; set;} 
-       
+
+        [Required(ErrorMessage = "Imaginea e obligatorie")]
+        [NotMapped]
+        public IFormFile? File { get; set; }
+
+        [NotMapped]
+        public Comment? AddedComment { get; set; }
         
-
-
     }
 }

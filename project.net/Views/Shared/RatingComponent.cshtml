@@ -1,0 +1,22 @@
+﻿@model Bookmark
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject UserManager<AppUser> userManager
+
+@{
+    string userId = userManager.GetUserId(User);
+}
+<style>
+    .upvote {
+        font-size: 2em;
+        color:white;
+    }
+    
+</style>
+<div>
+    @if (userId != null)
+    {
+        <i class="bi bi-hand-thumbs-up upvote" onclick="addUpvote(@userId, @Model.Id, 1)"></i>
+        <i class="bi bi-hand-thumbs-down upvote" onclick="addUpvote(1,@Model.Id, -1)"></i>
+    }
+</div>

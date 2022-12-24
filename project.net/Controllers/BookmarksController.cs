@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using project.net.Models;
 using project.net.Data;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -36,7 +35,12 @@ namespace project.net.Controllers
                 .Include("User")
                 .Include("Comments")
                 .Include("Comments.User")
+                .Include("BookmarkCategories")
+                .Include("Upvotes")
                 .ToList();
+
+            var userId = userManager.GetUserId(User);
+            ViewBag.MyCategories = db.Categories.Where(c => c.UserId == userId);
 
             return View(bookmark);
         }
@@ -49,10 +53,14 @@ namespace project.net.Controllers
         [Route("")]
         public IActionResult New(Bookmark bookmark)
         {
+            var userId = userManager.GetUserId(User);
+            ViewBag.MyCategories = db.Categories.Where(c => c.UserId == userId);
+
             ViewBag.Bookmarks = db.Bookmarks
                 .Include("User")
                 .Include("Comments")
                 .Include("Comments.User")
+                .Include("BookmarkCategories")
                 .ToList();
 
             bookmark.UserId = userManager.GetUserId(User);
@@ -91,5 +99,6 @@ namespace project.net.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
     }
 }

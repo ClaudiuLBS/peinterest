@@ -3,19 +3,58 @@
 @inject UserManager<AppUser> userManager
 
 @{
-    string userId = userManager.GetUserId(User);
+    var userId = userManager.GetUserId(User);
+    Upvote? upvote = Model.Upvotes!.FirstOrDefault(uv => uv.UserId == userId);
+    var likes = Model.Upvotes!.Count(uv => uv.Rating == 1);
+    var dislikes = Model.Upvotes!.Count(uv => uv.Rating == -1);
+    var rating = likes - dislikes;
 }
 <style>
     .upvote {
-        font-size: 2em;
+        font-size: 1.5em;
         color:white;
     }
-    
+    .upvote:hover {
+        cursor: pointer;
+        color: aqua;
+    }
+    #rating-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: rgba(0,0,0,.5);
+        padding: 1em 3em 0.5em 0.5em;
+        border-top-right-radius: 100%;
+        display: flex;
+        align-items: center;
+    }
+    #rating-text {
+        color: #fff;
+        font-size: 1.2em;
+        margin: 0 .1em
+    }
 </style>
-<div>
+
+<div id="rating-container">
     @if (userId != null)
     {
-        <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
-        <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+        @if (upvote == null || upvote.Rating == 0)
+        {
+            <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+            <div id="rating-text">@rating</div>
+            <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+        }
+        else if (upvote.Rating == 1)
+        {
+            <i id="like" class="bi bi-hand-thumbs-up-fill upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+            <div id="rating-text">@rating</div>
+            <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+        }
+        else if (upvote.Rating == -1)
+        {
+            <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+            <div id="rating-text">@rating</div>
+            <i id="dislike" class="bi bi-hand-thumbs-down-fill upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+        }
     }
 </div>

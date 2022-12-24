@@ -5,8 +5,11 @@
         BookmarkId: bookmarkId,
         Rating: rating
     };
+    console.log(upvoteObj)
     const likeButton = document.getElementById("like");
     const dislikeButton = document.getElementById("dislike");
+    const ratingDisplay = document.getElementById("rating-text");
+    
     const classes = {
         likeFill: 'bi-hand-thumbs-up-fill',
         likeEmpty: 'bi-hand-thumbs-up',
@@ -21,6 +24,7 @@
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (result) {
+            ratingDisplay.innerHTML = result.rating;
             if (result.rating == 0) {
                 likeButton.classList.remove(classes.likeFill);
                 likeButton.classList.add(classes.likeEmpty);

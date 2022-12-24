@@ -1,4 +1,13 @@
-﻿@model project.net.Models.Bookmark
+﻿@using project.net.ViewModels
+@model project.net.Models.Bookmark
+
+@{
+    BookmarksAndCategories bookmarksAndCategories = new()
+    {
+        Bookmarks = ViewBag.Bookmarks,
+        Categories = ViewBag.MyCategories
+    };
+}
 
 <style>
     .content {
@@ -20,5 +29,5 @@
     {
         @await Html.PartialAsync("ListBookmark", bookmark)
     }
-    @await Html.PartialAsync("BookmarkModal", (IEnumerable<Bookmark>)ViewBag.Bookmarks)
+    @await Html.PartialAsync("BookmarkModal", bookmarksAndCategories)
 </div>

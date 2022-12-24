@@ -15,5 +15,8 @@ namespace project.net.Models
         public string? Name { get; set; }
 
         public virtual ICollection<BookmarkCategory>? BookmarkCategories { get; set; }
+
+        [NotMapped]
+        public int? BookmarkId { get; set; }
     }
 }

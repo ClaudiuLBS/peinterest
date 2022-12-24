@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bookmark>
+﻿@model project.net.ViewModels.BookmarksAndCategories
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject UserManager<AppUser> userManager
@@ -6,11 +6,12 @@
 @{
     string? bookmarkId = Context.Request.Query["bookmarkId"];
     var bookmark = (
-        from b in Model 
+        from b in Model.Bookmarks 
         where b.Id.ToString() == bookmarkId 
         select b
     ).FirstOrDefault();
 
+    var savedToCategories = bookmark?.BookmarkCategories;
     var userId = userManager.GetUserId(User);
 }
 <style>
@@ -80,12 +81,33 @@
         width: 100%;
         background: #e9e9e9;
     }
+    #save-bookmark {
+        font-size: 1.4em;
+    }
+    .dropdown-item:hover {
+        cursor: pointer;
+    }
 </style>
 
 @if (bookmark != null)
 {
     <div class="my-modal">
         <div style="grid-area: header" class="my-header">
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i id="save-bookmark" class="bi bi-bookmark-star-fill"></i>
+                </button>
+                <ul id="categories-list" class="dropdown-menu">
+                    <li style="padding: 0 7px"><input onkeypress="addNewCategory(event, '@userId', @bookmark.Id)" type="text" class="form-control" placeholder="New Category" /></li>
+                    <li><hr class="dropdown-divider"></li>
+                    @foreach (var category in Model.Categories!)
+                    {
+                        <li class="dropdown-item" value="@category.Id" onclick="addBookmarkToCategory(event, @bookmarkId)">
+                            <i class="bi @(savedToCategories.Any(stc => stc.CategoryId == category.Id) ? "bi-bookmark-fill" : "bi-bookmark")" id="category_@category.Id"></i> @category.Name
+                        </li>
+                    }
+                </ul>
+            </div>
             <div>@bookmark.Title | @bookmark.User.UserName</div>
             <button type="button" onclick="closeBookmarkModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>

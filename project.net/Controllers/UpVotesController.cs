@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using project.net.Data;
 using project.net.Models;
 
@@ -44,7 +45,12 @@ namespace project.net.Controllers
 
             db.Upvotes.Add(upvote);
             db.SaveChanges();
-            return new JsonResult(upvote);
+
+            var bookmark = db.Bookmarks.Include("Upvote").FirstOrDefault(b => b.Id == upvote.BookmarkId);
+            var likes = bookmark.Upvotes!.Count(uv => uv.Rating == 1);
+            var dislikes = bookmark.Upvotes!.Count(uv => uv.Rating == -1);
+
+            return new JsonResult(new {upvote, rating = likes - dislikes });
         }
     }
 }

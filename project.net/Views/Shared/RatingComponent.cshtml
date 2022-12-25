@@ -36,25 +36,25 @@
 </style>
 
 <div id="rating-container">
-    @if (userId != null)
+    @if (User.Identity.IsAuthenticated)
     {
         @if (upvote == null || upvote.Rating == 0)
         {
-            <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+            <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote(@Model.Id, 1)"></i>
             <div id="rating-text">@rating</div>
-            <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+            <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote(@Model.Id, -1)"></i>
         }
         else if (upvote.Rating == 1)
         {
-            <i id="like" class="bi bi-hand-thumbs-up-fill upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+            <i id="like" class="bi bi-hand-thumbs-up-fill upvote" onclick="addUpvote(@Model.Id, 1)"></i>
             <div id="rating-text">@rating</div>
-            <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+            <i id="dislike" class="bi bi-hand-thumbs-down upvote" onclick="addUpvote(@Model.Id, -1)"></i>
         }
         else if (upvote.Rating == -1)
         {
-            <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote('@userId', @Model.Id, 1)"></i>
+            <i id="like" class="bi bi-hand-thumbs-up upvote" onclick="addUpvote(@Model.Id, 1)"></i>
             <div id="rating-text">@rating</div>
-            <i id="dislike" class="bi bi-hand-thumbs-down-fill upvote" onclick="addUpvote('@userId', @Model.Id, -1)"></i>
+            <i id="dislike" class="bi bi-hand-thumbs-down-fill upvote" onclick="addUpvote(@Model.Id, -1)"></i>
         }
     }
 </div>

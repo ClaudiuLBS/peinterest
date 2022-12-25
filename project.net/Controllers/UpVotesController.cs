@@ -29,28 +29,35 @@ namespace project.net.Controllers
         [Route("/upvote")]
         public IActionResult New([FromBody]Upvote upvote)
         {
-            Upvote? currentUpvote =
-                db.Upvotes
-                    .Where(uv => uv.UserId == upvote.UserId)
-                    .Where(uv => uv.BookmarkId == upvote.BookmarkId)
-                    .FirstOrDefault();
+            var userId = userManager.GetUserId(User);
 
+            //cautam votul curent al userului
+            var currentUpvote = db.Upvotes
+                .Where(uv => uv.UserId == userId)
+                .FirstOrDefault(uv => uv.BookmarkId == upvote.BookmarkId);
+
+            //verificam daca userul a mai votat bookmarkul
             if (currentUpvote != null)
             {
+                //actualizam ratingul
                 currentUpvote.Rating = currentUpvote.Rating == upvote.Rating ? 0 : upvote.Rating;
                 db.Upvotes.Update(currentUpvote);
                 db.SaveChanges();
-                return new JsonResult(currentUpvote);
+            }
+            else
+            {
+                //adaugam unul nou
+                currentUpvote = upvote;
+                db.Upvotes.Add(currentUpvote);
+                db.SaveChanges();
             }
 
-            db.Upvotes.Add(upvote);
-            db.SaveChanges();
+            //calculam noua dinferenta dintre like-uri si dislike-uri
+            var bookmark = db.Bookmarks.Include("Upvotes").FirstOrDefault(b => b.Id == currentUpvote.BookmarkId);
+            var likes = bookmark.Upvotes.Count(uv => uv.Rating == 1);
+            var dislikes = bookmark.Upvotes.Count(uv => uv.Rating == -1);
 
-            var bookmark = db.Bookmarks.Include("Upvote").FirstOrDefault(b => b.Id == upvote.BookmarkId);
-            var likes = bookmark.Upvotes!.Count(uv => uv.Rating == 1);
-            var dislikes = bookmark.Upvotes!.Count(uv => uv.Rating == -1);
-
-            return new JsonResult(new {upvote, rating = likes - dislikes });
+            return new JsonResult(new {userRating = currentUpvote.Rating, rating = likes - dislikes });
         }
     }
 }

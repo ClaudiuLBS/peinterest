@@ -1,15 +1,17 @@
-﻿const addUpvote = (userId, bookmarkId, rating) => {
+﻿const addUpvote = (bookmarkId, rating) => {
 
+    //obiectul trimis in body
     var upvoteObj = {
-        UserId: userId,
         BookmarkId: bookmarkId,
         Rating: rating
     };
-    console.log(upvoteObj)
+
+    //butoane
     const likeButton = document.getElementById("like");
     const dislikeButton = document.getElementById("dislike");
     const ratingDisplay = document.getElementById("rating-text");
-    
+
+    //clase pt a stiliza like/dislike cand apasam pe ele
     const classes = {
         likeFill: 'bi-hand-thumbs-up-fill',
         likeEmpty: 'bi-hand-thumbs-up',
@@ -24,27 +26,29 @@
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (result) {
+            //diferenta dintre like-uri si dislike-uri
             ratingDisplay.innerHTML = result.rating;
-            if (result.rating == 0) {
+
+            //actualizam style-ul butoanelor de like/dislike
+            if (result.userRating == 0) {
                 likeButton.classList.remove(classes.likeFill);
                 likeButton.classList.add(classes.likeEmpty);
 
                 dislikeButton.classList.remove(classes.dislikeFill);
                 dislikeButton.classList.add(classes.dislikeEmpty);
-            } else if (result.rating == 1) {
+            } else if (result.userRating == 1) {
                 likeButton.classList.remove(classes.likeEmpty);
                 likeButton.classList.add(classes.likeFill);
 
                 dislikeButton.classList.remove(classes.dislikeFill);
                 dislikeButton.classList.add(classes.dislikeEmpty);
-            } else {
+            } else if (result.userRating == -1) {
                 likeButton.classList.remove(classes.likeFill);
                 likeButton.classList.add(classes.likeEmpty);
 
                 dislikeButton.classList.remove(classes.dislikeEmpty);
                 dislikeButton.classList.add(classes.dislikeFill);
             }
-            console.log(result)
         },
         error: function (errormessage) {
             alert(errormessage.responseText);

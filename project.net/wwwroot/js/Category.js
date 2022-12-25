@@ -1,8 +1,7 @@
-﻿const addNewCategory = (event, userId, bookmarkId) => {
+﻿const addNewCategory = (event, bookmarkId) => {
     if (event.key != 'Enter') return;
 
     let categoryObj = {
-        UserId: userId,
         Name: event.target.value,
         BookmarkId: bookmarkId
     }
@@ -17,10 +16,14 @@
             console.log(result);
             const categoriesList = document.getElementById('categories-list');
             const newCategory = document.createElement('li');
+            
             newCategory.classList.add('dropdown-item');
-            newCategory.innerHTML = `<i class="bi bi-bookmark-fill"></i> ${result.name}`;
+            newCategory.value = result.id;
+            newCategory.onclick = (event) => addBookmarkToCategory(event, bookmarkId);
+            newCategory.innerHTML = `<i class="bi bi-bookmark-fill" id="category_${result.id}"></i> ${result.name}`;
             categoriesList.appendChild(newCategory);
             event.target.value = '';
+            
         },
         error: function (errormessage) {
             console.log(errormessage.responseText);
@@ -30,6 +33,7 @@
 
 const addBookmarkToCategory = (event, BookmarkId) => {
     const data = { CategoryId: event.target.value, BookmarkId }
+    console.log(data);
     $.ajax({
         url: "/add-bookmark-to-category",
         data: JSON.stringify(data),

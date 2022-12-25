@@ -18,6 +18,7 @@
     }
     return url;
 }
+
 const closeBookmarkModal = () => {
     const currentUrl = window.location.href;
     const newUrl = removeURLParameter(currentUrl, "bookmarkId");

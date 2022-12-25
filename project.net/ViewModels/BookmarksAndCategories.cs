@@ -4,7 +4,7 @@ namespace project.net.ViewModels
 {
     public class BookmarksAndCategories
     {
-        public IEnumerable<Bookmark>? Bookmarks { get; set; }
+        public Bookmark? Bookmark { get; set; }
         public IEnumerable<Category>? Categories { get; set; }
     }
 }

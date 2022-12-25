@@ -5,14 +5,11 @@
 
 @{
     string? bookmarkId = Context.Request.Query["bookmarkId"];
-    var bookmark = (
-        from b in Model.Bookmarks 
-        where b.Id.ToString() == bookmarkId 
-        select b
-    ).FirstOrDefault();
+    var bookmark = Model.Bookmark;
 
     var savedToCategories = bookmark?.BookmarkCategories;
     var userId = userManager.GetUserId(User);
+
 }
 <style>
     .my-modal {
@@ -87,28 +84,97 @@
     .dropdown-item:hover {
         cursor: pointer;
     }
+    #bookmark-menu:after{
+        display: none !important;
+    }
+    #bookmark-edit-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        font-size: 1.3em;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+    }
+
+    #confirm-bookmark-edit,
+    #cancel-bookmark-edit {
+        align-items: center;
+        padding: .1em 1em;
+    }
+    #confirm-bookmark-edit:hover {
+        color: rgb(104, 217, 52);
+        cursor: pointer
+    }
+    #cancel-bookmark-edit:hover {
+        color: rgb(209, 55, 38);
+        cursor: pointer;
+    }
+    #confirm-bookmark-edit {
+        border: 1px solid rgb(104, 217, 52);
+        background: rgba(104, 217, 52, .5);
+        border-bottom-left-radius: 20px;
+    }
+    #cancel-bookmark-edit {
+        border: 1px solid rgb(209, 55, 38);
+        background: rgba(209, 55, 38, .5);
+        border-bottom-right-radius: 20px;
+    }
+    .bi-check {
+        font-size: 1.5em;
+    }
 </style>
 
 @if (bookmark != null)
 {
     <div class="my-modal">
         <div style="grid-area: header" class="my-header">
-            <div class="dropdown">
-                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i id="save-bookmark" class="bi bi-bookmark-star-fill"></i>
-                </button>
-                <ul id="categories-list" class="dropdown-menu">
-                    <li style="padding: 0 7px"><input onkeypress="addNewCategory(event, '@userId', @bookmark.Id)" type="text" class="form-control" placeholder="New Category" /></li>
-                    <li><hr class="dropdown-divider"></li>
-                    @foreach (var category in Model.Categories!)
-                    {
-                        <li class="dropdown-item" value="@category.Id" onclick="addBookmarkToCategory(event, @bookmarkId)">
-                            <i class="bi @(savedToCategories.Any(stc => stc.CategoryId == category.Id) ? "bi-bookmark-fill" : "bi-bookmark")" id="category_@category.Id"></i> @category.Name
-                        </li>
-                    }
-                </ul>
+            <div style="display: flex; align-items: center">
+                @if (bookmark.UserId == userId)
+                {
+                    <div class="dropdown">
+                        <button id="bookmark-menu" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul id="categories-list" class="dropdown-menu">
+                            <li class="dropdown-item">
+                                <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-bookmarkId="@bookmark.Id">
+                                    <button class="btn" type="submit" style="padding-left: 0">
+                                        <i class="bi bi-trash-fill"></i> Delete
+                                    </button>
+                                </form>
+                            </li>
+                            <li class="dropdown-item" onclick="handleEditBookmark()">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </li>
+                        </ul>
+                    </div>
+                }
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i id="save-bookmark" class="bi bi-bookmark-star-fill"></i>
+                        </button>
+                        <ul id="categories-list" class="dropdown-menu">
+                            <li style="padding: 0 7px"><input onkeypress="addNewCategory(event, @bookmark.Id)" type="text" class="form-control" placeholder="New Category"/></li>
+                            <li><hr class="dropdown-divider"></li>
+                            @foreach (var category in Model.Categories!)
+                            {
+                                <li class="dropdown-item" value="@category.Id" onclick="addBookmarkToCategory(event, @bookmarkId)">
+                                    <i class="bi @(savedToCategories.Any(stc => stc.CategoryId == category.Id) ? "bi-bookmark-fill" : "bi-bookmark")" id="category_@category.Id"></i> @category.Name
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
-            <div>@bookmark.Title | @bookmark.User.UserName</div>
+            <div style="display: flex; align-items: center">
+                <div id="title-section">@bookmark.Title</div>
+                <div>&nbsp;| @bookmark.User.UserName</div>
+            </div>
             <button type="button" onclick="closeBookmarkModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div id="img-container">
@@ -117,7 +183,7 @@
         </div>
         <div id="right-modal">
             <div>
-                <div class="comm" style="padding: 1em">
+                <div id="description-section" class="comm" style="padding: 1em">
                     <p style="overflow-wrap: break-word">@bookmark.Description</p>
                 </div>
                 @foreach (var comment in bookmark.Comments)
@@ -137,13 +203,5 @@
         <div class="new-comm-box">
             @await Html.PartialAsync("AddComment", bookmark)
         </div>
-        <!--
-        @if (bookmark.UserId == userId)
-        {
-            <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-bookmarkId="@bookmark.Id">
-                <button type="submit">delete this shit</button>
-            </form>
-        }
-        -->
     </div>
 }

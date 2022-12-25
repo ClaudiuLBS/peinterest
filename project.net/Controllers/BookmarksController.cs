@@ -28,16 +28,19 @@ namespace project.net.Controllers
 
         // Afisam pe pagina principala toate bookmarkurile in functie de popularitate
         [Route("")]
-        public IActionResult Index()
+        public IActionResult Index([FromQuery(Name = "bookmarkId")] int? bookmarkId)
         {
             Bookmark bookmark = new();
-            ViewBag.Bookmarks = db.Bookmarks
+            var allBookmarks = db.Bookmarks
                 .Include("User")
                 .Include("Comments")
                 .Include("Comments.User")
                 .Include("BookmarkCategories")
                 .Include("Upvotes")
                 .ToList();
+
+            ViewBag.Bookmarks = allBookmarks;
+            ViewBag.CurrentBookmark = allBookmarks.FirstOrDefault(b => b.Id == bookmarkId);
 
             var userId = userManager.GetUserId(User);
             ViewBag.MyCategories = db.Categories.Where(c => c.UserId == userId);
@@ -100,5 +103,24 @@ namespace project.net.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("/edit-bookmark")]
+        public IActionResult Edit([FromBody]Bookmark bookmark)
+        {
+            var actualBookmark = db.Bookmarks.FirstOrDefault(b => b.Id == bookmark.Id);
+            var userId = userManager.GetUserId(User);
+
+            if (actualBookmark == null || actualBookmark?.UserId != userId)
+                return NotFound();
+
+            actualBookmark.Title = bookmark.Title;
+            actualBookmark.Description = bookmark.Description;
+
+            db.Bookmarks.Update(actualBookmark);
+            db.SaveChanges();
+
+            return new JsonResult(actualBookmark);
+        }
     }
 }

@@ -49,6 +49,25 @@ namespace project.net.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("/edit-comment")]
+        public IActionResult Edit([FromBody]Comment receivedComment)
+        {
+            var userId = userManager.GetUserId(User);
+            var comment = db.Comments.FirstOrDefault(c => c.Id == receivedComment.Id);
+
+            //aici vom testa si daca nu e admin
+            if (comment == null || comment.UserId != userId)
+                return NotFound();
+
+            comment.Content = receivedComment.Content;
+            db.Comments.Update(comment);
+            db.SaveChanges();
+
+            return Json(new { commentId =  receivedComment.Id });
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("/delete-comment")]
         public IActionResult Delete([FromBody]Comment receivedComment)
         {

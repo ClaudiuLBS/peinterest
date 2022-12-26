@@ -141,7 +141,7 @@
                         <button id="bookmark-menu" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
-                        <ul id="categories-list" class="dropdown-menu">
+                        <ul class="dropdown-menu">
                             <li class="dropdown-item">
                                 <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-bookmarkId="@bookmark.Id">
                                     <button class="btn" type="submit" style="padding-left: 0">
@@ -213,20 +213,19 @@
                                 <div class="dropdown">
                                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     </button>
-                                    <ul id="categories-list" class="dropdown-menu">
+                                    <ul class="dropdown-menu">
                                         <li class="dropdown-item" onclick="deleteComment(@comment.Id)">
                                             <i class="bi bi-trash-fill"></i> Delete
                                         </li>
-                                        <li class="dropdown-item">
+
+                                        <li class="dropdown-item" onclick="editComment(@comment.Id)">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </li>
                                     </ul>
                                 </div>
                             }
                         </div>
-                        <div class="toast-body" style="padding-top: 0">
-                            @comment.Content
-                        </div>
+                        <div id="comment_content_@comment.Id" class="toast-body" style="padding-top: 0">@comment.Content</div>
                     </div>
                 }
             </div>

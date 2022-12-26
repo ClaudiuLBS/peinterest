@@ -30,6 +30,7 @@ namespace project.net.Controllers
         public IActionResult New([FromBody]Upvote upvote)
         {
             var userId = userManager.GetUserId(User);
+            upvote.UserId = userId;
 
             //cautam votul curent al userului
             var currentUpvote = db.Upvotes

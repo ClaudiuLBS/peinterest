@@ -48,3 +48,7 @@ textarea {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.stop-scrolling {
+    overflow: hidden;
+}

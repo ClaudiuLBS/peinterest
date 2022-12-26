@@ -29,8 +29,8 @@ const getHeight = () => {
     divElement = document.querySelector("#img-container");
     if (!divElement) return;
     elemHeight = divElement.offsetHeight;
-
     document.querySelector(".modal-img").style.maxHeight = elemHeight + "px";
+    document.body.classList.add('stop-scrolling');
 }
 
 const handleRating = (userId, value, bookmarkId) => {

@@ -44,7 +44,25 @@ namespace project.net.Controllers
             db.Comments.Add(comment);
             db.SaveChanges();
 
-            return RedirectToAction("Index", "Bookmarks", new { bookmarkId = bookmarkId });
+            return RedirectToAction("Index", "Bookmarks", new { bookmarkId = (int?)bookmarkId });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("/delete-comment")]
+        public IActionResult Delete([FromBody]Comment receivedComment)
+        {
+            var userId = userManager.GetUserId(User);
+            var comment = db.Comments.FirstOrDefault(c => c.Id == receivedComment.Id);
+
+            //aici vom testa si daca nu e admin
+            if (comment == null || comment.UserId != userId)
+                return NotFound();
+
+            db.Comments.Remove(comment);
+            db.SaveChanges();
+
+            return Json(new { commentId =  receivedComment.Id });
         }
     }
 }

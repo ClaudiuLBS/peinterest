@@ -9,7 +9,6 @@
 
     var savedToCategories = bookmark?.BookmarkCategories;
     var userId = userManager.GetUserId(User);
-
 }
 <style>
     .my-modal {
@@ -125,6 +124,9 @@
     .bi-check {
         font-size: 1.5em;
     }
+    #comment-menu:after{
+        display: none;
+    }
 </style>
 
 @if (bookmark != null)
@@ -132,6 +134,7 @@
     <div class="my-modal">
         <div style="grid-area: header" class="my-header">
             <div style="display: flex; align-items: center">
+                <!-- BOOKMARK OPTIONS (DELETE, EDIT) -->
                 @if (bookmark.UserId == userId)
                 {
                     <div class="dropdown">
@@ -152,6 +155,8 @@
                         </ul>
                     </div>
                 }
+                
+                <!-- BOOKMARK SAVING -->
                 @if (User.Identity.IsAuthenticated)
                 {
                     <div class="dropdown">
@@ -171,27 +176,53 @@
                     </div>
                 }
             </div>
+            
+            <!-- TITLE -->
             <div style="display: flex; align-items: center">
                 <div id="title-section">@bookmark.Title</div>
                 <div>&nbsp;| @bookmark.User.UserName</div>
             </div>
+
+            <!-- CLOSE BUTTON -->
             <button type="button" onclick="closeBookmarkModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
+        <!-- IMAGE -->
         <div id="img-container">
             <img src="/images/@bookmark.Image" class="modal-img" alt="not found" />
             @await Html.PartialAsync("RatingComponent", bookmark)
         </div>
+
         <div id="right-modal">
             <div>
+                <!-- DESCRIPTION -->
                 <div id="description-section" class="comm" style="padding: 1em">
                     <p style="overflow-wrap: break-word">@bookmark.Description</p>
                 </div>
+                <!-- COMMENTS -->
                 @foreach (var comment in bookmark.Comments)
                 {
-                    <div class="comm">
+                    <div id="comment_@comment.Id" class="comm">
                         <div class="toast-header" style="padding-bottom: 0">
                             <strong class="me-auto">@comment.User.UserName</strong>
                             <small class="text-muted">@comment.CreatedAt.ToString()</small>
+
+                            <!-- COMMENT OPTIONS (DELETE, EDIT) -->
+                            @if (comment.UserId == userId)
+                            {
+                                <div class="dropdown">
+                                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    </button>
+                                    <ul id="categories-list" class="dropdown-menu">
+                                        <li class="dropdown-item" onclick="deleteComment(@comment.Id)">
+                                            <i class="bi bi-trash-fill"></i> Delete
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
                         </div>
                         <div class="toast-body" style="padding-top: 0">
                             @comment.Content
@@ -200,6 +231,7 @@
                 }
             </div>
         </div>
+        <!-- NEW COMMENT-->
         <div class="new-comm-box">
             @await Html.PartialAsync("AddComment", bookmark)
         </div>

@@ -192,7 +192,7 @@
             <!-- TITLE -->
             <div style="display: flex; align-items: center">
                 <div id="title-section">@bookmark.Title</div>
-                <div>&nbsp;| @bookmark.User.UserName</div>
+                <div><a href="/u/@bookmark.UserId">&nbsp;| @bookmark.User.UserName</a></div>
             </div>
 
             <!-- CLOSE BUTTON -->
@@ -236,7 +236,7 @@
                         <div class="toast-header" style="padding-bottom: 0; display: block">
                             <!-- COMMENT HEADER CONTENT-->
                             <div style="display: flex; justify-content: space-between; width: 100%">
-                                <strong class="me-auto">@comment.User.UserName</strong>
+                                <strong class="me-auto"><a href="/u/@comment.UserId">@comment.User.UserName</a></strong>
                                 <small class="text-muted">@comment.CreatedAt.Value.ToString("dd MMM yyyy HH:mm")</small>
                             </div>
                         </div>

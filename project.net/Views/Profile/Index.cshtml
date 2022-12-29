@@ -42,22 +42,31 @@
         padding: .5em 1em;
     }
 </style>
+<!-- HEADER-->
 <div class="username">
     <h3>@user.UserName collections</h3>
 </div>
 <div style="display: flex; flex-wrap: wrap; justify-content: center; padding: 0 2em">
-    <a class="card" style="width: 18rem;" asp-action="ListBookmarks" asp-controller="Profile" asp-route-userId="@user.Id" >
-        <div class="category-header">
-            <h5 class="card-title">Personal Bookmarks</h5>
-        </div>
-        <!--<img src="/images/" alt="Not found">-->
-    </a>
+    <!-- BOOKMARKS CREATED BY USER-->
+    @if (ViewBag.userPersonalBookmark != null)
+    {
+        <a class="card" style="width: 18rem; border: 3px solid #fcd34c" asp-action="ListBookmarks" asp-controller="Profile" asp-route-userId="@user.Id" asp-route-categoryId="created">
+            <div class="category-header" style="border-bottom: 3px solid #fcd34c">
+                <h5 class="card-title" style="color: #fcd34c">Personal Bookmarks</h5>
+            </div>
+            <img src="/images/@ViewBag.userPersonalBookmark.Image" alt="Not found">
+        </a>
+    }
+
+    <!-- USER'S CATEGORIES-->
     @foreach (Category category in ViewBag.categories)
     {
+        <!-- SHOW ONLY CATEGORIES WITH BOOKMARKS SAVED-->
         @if (@category.BookmarkCategories.Any())
         {
             <a id="category_@category.Id" class="card" style="width: 18rem;" asp-action="ListBookmarks" asp-controller="Profile" asp-route-userId="@user.Id" asp-route-categoryId="@category.Id">
                 <div class="category-header">
+                    <!-- CATEGORY NAME -->
                     <h5 id="category-title-@category.Id" class="card-title">@category.Name</h5>
                     <!-- CATEGORY OPTIONS -->
                     @if (category.UserId == userId)

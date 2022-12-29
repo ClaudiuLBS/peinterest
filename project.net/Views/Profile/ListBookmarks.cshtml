@@ -17,7 +17,25 @@
         flex-wrap: wrap;
         justify-content: center;
     }
+    .header {
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+    }
 </style>
+<div class="header">
+    @if (ViewBag.currentCategory != null)
+    {
+        <h3 style="text-align: center">
+            @ViewBag.currentUser.UserName - @ViewBag.currentCategory.Name
+        </h3>
+    }
+    else
+    {
+        <h3 style="text-align: center">
+            @ViewBag.currentUser.UserName - Personal Bookmarks
+        </h3>
+    }
+</div>
 <div class="content">
     @foreach (Bookmark bookmark in ViewBag.bookmarks)
     {

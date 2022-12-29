@@ -4,7 +4,8 @@
     const commentContent = document.getElementById(`comment_content_${commentId}`);
     const commentBackup = commentElement.cloneNode(true);
     commentElement.innerHTML = "";
-    //Create input element
+
+    //Create input element and focus it
     const commentInput = document.createElement('textarea');
     commentInput.classList.add('form-control');
     commentInput.innerHTML = commentContent.innerHTML;
@@ -13,6 +14,9 @@
 
     commentInput.onkeydown = (event) => {
         if (event.key == 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            event.stopPropagation()
+            //save edit
             const comment = {
                 Id: commentId,
                 Content: commentInput.value
@@ -24,16 +28,16 @@
                 type: "POST",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
-                success: function (result) {
-                    console.log(result);
+                success: result => {
                     commentElement.innerHTML = commentBackup.innerHTML; 
                     document.getElementById(`comment_content_${commentId}`).innerHTML = commentInput.value;
+                    commentElement.children[0].children[0].classList.remove('show');
+                    commentElement.children[0].children[1].classList.remove('show');
                 },
-                error: function (errormessage) {
+                error: errormessage => {
                     alert(errormessage.responseText);
                 }
             });
-            //update comment
         } else if (event.key == 'Escape') {
             //cancel edit
             commentElement.innerHTML = commentBackup.innerHTML;

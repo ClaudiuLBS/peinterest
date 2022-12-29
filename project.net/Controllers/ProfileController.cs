@@ -1,19 +1,41 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using project.net.Data;
+using project.net.Models;
 
 namespace project.net.Controllers
 {
     public class ProfileController : Controller
     {
-        [Route("profile/{id}")]
-        public IActionResult Index(string id) 
-        {
-            return Content($"User {id}");
+        private readonly ApplicationDbContext db;
+        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly UserManager<AppUser> userManager;
+
+        public ProfileController(
+            ApplicationDbContext context,
+            IWebHostEnvironment host,
+            UserManager<AppUser> userManager
+        ) {
+            this.db = context;
+            this.webHostEnvironment = host;
+            this.userManager = userManager;
         }
 
-        [Route("profile/{id}/categories")]
-        public IActionResult UserBookmarks(string id)
+        [Route("/u/{id}")]
+        public IActionResult Index(string id)
         {
-            return Content($"Bookmarks of user {id}");
+            var user = db.AppUsers.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+
+            var categories = db.Categories
+                .Where(c => c.UserId == id)
+                .Include("BookmarkCategories")
+                .Include("BookmarkCategories.Bookmark");
+
+            ViewBag.categories = categories;
+            return View();
         }
     }
 }

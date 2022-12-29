@@ -1,16 +1,82 @@
-﻿<div style="display: flex; flex-wrap: wrap">
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> userManager
+
+@{
+    AppUser user = ViewBag.user;
+    var userId = userManager.GetUserId(User);
+}
+<style scoped="true">
+    img {
+        width: 100%;
+        height: 9rem;
+        object-fit: cover;
+    }
+    .card {
+        border-radius: 10px !important;
+        overflow: hidden;
+        margin: 1em 1em;
+    }
+    .username {
+        display: flex;
+        justify-content: center;
+        border-bottom: 1px solid #e5e5e5;
+    }
+    .card-title {
+        margin: 0;
+        text-align: center;
+    }
+    .card .bi-three-dots-vertical {
+        visibility: hidden;
+    }
+    .bi-three-dots-vertical {
+        padding: .3em;
+    }
+    .card:hover .bi-three-dots-vertical {
+        visibility: visible;
+    }
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        padding: .5em 1em;
+    }
+</style>
+<div class="username">
+    <h3>@user.UserName collections</h3>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; padding: 0 2em">
+    <a class="card" style="width: 18rem;" asp-action="ListBookmarks" asp-controller="Profile" asp-route-userId="@user.Id" >
+        <div class="category-header">
+            <h5 class="card-title">Personal Bookmarks</h5>
+        </div>
+        <!--<img src="/images/" alt="Not found">-->
+    </a>
     @foreach (Category category in ViewBag.categories)
     {
         @if (@category.BookmarkCategories.Any())
         {
-            <div class="card" style="width: 18rem;">
-                <img src="/images/@category.BookmarkCategories.FirstOrDefault().Bookmark.Image" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">@category.Name</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a id="category_@category.Id" class="card" style="width: 18rem;" asp-action="ListBookmarks" asp-controller="Profile" asp-route-userId="@user.Id" asp-route-categoryId="@category.Id">
+                <div class="category-header">
+                    <h5 id="category-title-@category.Id" class="card-title">@category.Name</h5>
+                    <!-- CATEGORY OPTIONS -->
+                    @if (category.UserId == userId)
+                    {
+                        <div class="dropdown">
+                            <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item" onclick="deleteCategory(event, @category.Id)">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </li>
+                                <li class="dropdown-item" onclick="editCategory(event, @category.Id)">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </li>
+                            </ul>
+                        </div>
+                    }
                 </div>
-            </div>
+                <img src="/images/@category.BookmarkCategories.FirstOrDefault().Bookmark.Image" alt="Not found">
+            </a>
         }
     }
 </div>

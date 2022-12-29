@@ -181,7 +181,7 @@
                             @foreach (var category in Model.Categories!)
                             {
                                 <li class="dropdown-item" value="@category.Id" onclick="addBookmarkToCategory(event, @bookmarkId)">
-                                    <i class="bi @(savedToCategories.Any(stc => stc.CategoryId == category.Id) ? "bi-bookmark-fill" : "bi-bookmark")" id="category_@category.Id"></i> @category.Name
+                                    <i class="bi @(savedToCategories != null && savedToCategories.Any(stc => stc.CategoryId == category.Id) ? "bi-bookmark-fill" : "bi-bookmark")" id="category_@category.Id"></i> @category.Name
                                 </li>
                             }
                         </ul>
@@ -247,7 +247,7 @@
         </div>
         <!-- NEW COMMENT-->
         <div class="new-comm-box">
-            @await Html.PartialAsync("AddComment", bookmark)
+             @await Html.PartialAsync("AddComment", bookmark)
         </div>
     </div>
 }

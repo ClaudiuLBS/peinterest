@@ -74,5 +74,44 @@ namespace project.net.Controllers
             db.SaveChanges();
             return new JsonResult(new {action = "removed"});
         }
+
+        [Authorize]
+        [HttpPost]
+        [Route("/edit-category")]
+        public IActionResult Edit([FromBody] Category category)
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null)
+                return NotFound();
+
+            var actualCategory = db.Categories.FirstOrDefault(c => c.Id == category.Id);
+            if (actualCategory == null || actualCategory.UserId != userId)
+                return NotFound();
+
+            actualCategory.Name = category.Name;
+            db.Categories.Update(actualCategory);
+            db.SaveChanges();
+
+            return Json(new { categoryName = category.Name });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("/delete-category")]
+        public IActionResult Delete([FromBody] Category category)
+        {
+            var userId = userManager.GetUserId(User);
+            if (userId == null)
+                return NotFound();
+
+            var actualCategory = db.Categories.FirstOrDefault(c => c.Id == category.Id);
+            if (actualCategory == null || actualCategory.UserId != userId)
+                return NotFound();
+
+            db.Categories.Remove(actualCategory);
+            db.SaveChanges();
+
+            return Json(new { deletedCategory = actualCategory.Id });
+        }
     }
 }

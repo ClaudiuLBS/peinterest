@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Internal;
 
 
 namespace project.net.Controllers
@@ -31,15 +32,25 @@ namespace project.net.Controllers
         public IActionResult Index([FromQuery(Name = "bookmarkId")] int? bookmarkId)
         {
             Bookmark bookmark = new();
-            var allBookmarks = db.Bookmarks
-                .Include("User")
-                .Include("Comments")
-                .Include("Comments.User")
-                .Include("BookmarkCategories")
-                .Include("Upvotes")
-                .ToList();
+            //var allBookmarks = db.Bookmarks
+            //    .Include("User")
+            //    .Include("Comments")
+            //    .Include("Comments.User")
+            //    .Include("BookmarkCategories")
+            //    .Include("Upvotes")
+            //    .ToList();
 
-            ViewBag.Bookmarks = allBookmarks;
+            var allBookmarks = db.Bookmarks;
+            allBookmarks.Select(x => x.User).Load();
+            allBookmarks.Select(x => x.Comments).Load();
+            allBookmarks.Select(x => x.BookmarkCategories).Load();
+            allBookmarks.Select(x => x.Upvotes).Load();
+
+            foreach (var item in allBookmarks)
+                foreach (var comm in item.Comments)
+                    db.Entry(comm).Reference(c => c.User).Load();
+
+            ViewBag.Bookmarks = allBookmarks.ToList();
             ViewBag.CurrentBookmark = allBookmarks.FirstOrDefault(b => b.Id == bookmarkId);
 
             var userId = userManager.GetUserId(User);

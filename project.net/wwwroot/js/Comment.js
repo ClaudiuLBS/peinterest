@@ -1,4 +1,38 @@
-﻿const editComment = (commentId) => {
+﻿commentInput = document.getElementById('new-comment-content');
+
+onCommentInputKeyDown = (event, bookmarkId) => {
+    if (event.key == 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        event.stopPropagation()
+        newComment(bookmarkId)
+    }
+}
+
+const newComment = (bookmarkId) => {
+    const Comment = {
+        BookmarkId: bookmarkId,
+        Content: commentInput.value
+    };
+
+    if (Comment.Content.length == 0) return;
+
+    commentInput.value = "";
+    $.ajax({
+        url: `/new-comment`,
+        data: JSON.stringify(Comment),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: result => {
+            location.reload();
+        },
+        error: errormessage => {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+const editComment = (commentId) => {
     //Make a backup of the comment element and delete its content
     const commentElement = document.getElementById(`comment_${commentId}`);
     const commentContent = document.getElementById(`comment_content_${commentId}`);
@@ -21,6 +55,7 @@
                 Id: commentId,
                 Content: commentInput.value
             }
+            if (comment.Content.length == 0) return;
 
             $.ajax({
                 url: `/edit-comment`,

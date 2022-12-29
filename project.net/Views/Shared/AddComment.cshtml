@@ -1,18 +1,11 @@
 ﻿@model Bookmark
+<div style="display: flex; width:100%">
 
-@using (Html.BeginForm(
-    "New",
-    "Comments",
-    new { bookmarkId = Model.Id},
-    FormMethod.Post,
-    null,
-   new { enctype = "multipart/form-data", style = "display: flex; width:100%" }
-)) { 
     <div style="flex: 1">
-        @Html.TextAreaFor(b => b.AddedComment.Content, new { @class = "form-control", @rows = 2 })
-        @Html.ValidationMessageFor(b => b.AddedComment.Content, null, new { @class = "text-danger" })
+        <textarea class="form-control" id="new-comment-content" onkeydown="onCommentInputKeyDown(event, @Model.Id)"></textarea>
     </div>
-    <button class="btn" style="float: right" type="submit">
+    <button class="btn" style="float: right" onclick="newComment(@Model.Id)">
         <i class="bi bi-send-fill" style="font-size: 24px"></i>
     </button>
-}
+
+</div>

@@ -28,8 +28,9 @@ namespace project.net.Controllers
         [Authorize]
         [HttpPost]
         [Route("/post-comment/<bookmarkId:int>")]
-        public IActionResult New(Bookmark bookmark, int bookmarkId)
+        public IActionResult Post(Bookmark bookmark, int bookmarkId)
         {
+            //With form
             if (bookmark.AddedComment?.Content == null)
                 return RedirectToAction("Index", "Bookmarks", new { bookmarkId = bookmark.Id });
 
@@ -45,6 +46,19 @@ namespace project.net.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index", "Bookmarks", new { bookmarkId = (int?)bookmarkId });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("/new-comment")]
+        public IActionResult New([FromBody]Comment comment)
+        {
+            var userId = userManager.GetUserId(User);
+            comment.UserId = userId;
+            comment.CreatedAt = DateTime.Now;
+            db.Comments.Add(comment);
+            db.SaveChanges();
+            return Json(new { content = comment.Content });
         }
 
         [Authorize]

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace project.net.Controllers
 {
     [Authorize(Roles = "Admin")]
-    [Route("/Admin")]
+    //[Route("/admin")]
     public class AdminPanelController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -32,6 +32,7 @@ namespace project.net.Controllers
 
             _roleManager = roleManager;
         }
+        [Route("/admin")]
         public IActionResult Index()
         {
             var users = from user in db.Users
@@ -42,10 +43,10 @@ namespace project.net.Controllers
 
             return View();
         }
-
-        public async Task<ActionResult> Show(string id)
+        [Route("admin/show-user/{userId}")]
+        public async Task<ActionResult> Show(string userId)
         {
-            AppUser user = db.Users.Find(id);
+            AppUser user = db.Users.Find(userId);
             var roles = await _userManager.GetRolesAsync(user);
 
             ViewBag.Roles = roles;
@@ -53,9 +54,10 @@ namespace project.net.Controllers
             return View(user);
         }
 
-        public async Task<ActionResult> Edit(string id)
+        [Route("admin/edit-user/{userId}")]
+        public async Task<ActionResult> Edit(string userId)
         {
-            AppUser user = db.Users.Find(id);
+            AppUser user = db.Users.Find(userId);
 
             user.AllRoles = GetAllRoles();
 

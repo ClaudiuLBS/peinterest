@@ -17,6 +17,9 @@ namespace project.net.Models
 
         public virtual ICollection<Comment>? Comments { get; set; }
         
-        public virtual ICollection<Upvote>? Upvotes { get; set; }   
+        public virtual ICollection<Upvote>? Upvotes { get; set; }
+
+        [NotMapped]
+        public IEnumerable<SelectListItem>? AllRoles { get; set; }
     }
 }

@@ -116,43 +116,53 @@ namespace project.net.Controllers
                          .Include("Comments")
                          .Include("Upvotes")
                          .Include("Bookmarks.BookmarkCategories")
+                         .Include("Bookmarks.Comments")
+                         .Include("Bookmarks.Upvotes")
                          .FirstOrDefault(u => u.Id == id);
 
             if (user == null) return NotFound();
-            // Delete user bookmarks
-            //if (user.Bookmarks.Count > 0)
-            //{
-            //    foreach (var bookmark in user.Bookmarks)
-            //    {
-            //        db.Bookmarks.Remove(bookmark);
-            //    }
-            //}
-            //// Delete user comments
-            //if (user.Comments.Count > 0)
-            //{
-            //    foreach (var comment in user.Comments)
-            //    {
-            //        db.Comments.Remove(comment);
-            //    }
-            //}
-            //// Delete user upvotes 
-            //if (user.Upvotes.Count > 0)
-            //{
-            //    foreach (var upvote in user.Upvotes)
-            //    {
-            //        db.Upvotes.Remove(upvote);
-            //    }
-            //}
+
+
             // Delete user saved bookmarks
-            /*
-            if (user.BookmarkCategories.Count > 0)
-            {
-                foreach (var savedBookmark in user.BookmarkCategories)
+            if (user.Categories != null)
+                foreach (Category category in user.Categories)
                 {
-                    db.BookmarkCategories.Remove(savedBookmark);
+                    if (category.BookmarkCategories != null && category.BookmarkCategories.Count > 0)
+                        foreach (BookmarkCategory bc in category.BookmarkCategories)
+                            db.BookmarkCategories.Remove(bc);
+                    db.Categories.Remove(category);
                 }
-            }
-            */
+
+
+            // Delete user comments
+            if (user.Comments != null)
+                foreach (var comment in user.Comments)
+                    db.Comments.Remove(comment);
+
+            // Delete user upvotes 
+            if (user.Upvotes != null)
+                foreach (var upvote in user.Upvotes)
+                    db.Upvotes.Remove(upvote);
+
+            // Delete user bookmarks
+            if (user.Bookmarks != null)
+                foreach (var bookmark in user.Bookmarks)
+                {
+                    if (bookmark.Comments != null)
+                        foreach (var comment in bookmark.Comments)
+                            db.Comments.Remove(comment);
+
+                    if (bookmark.Upvotes != null)
+                        foreach (var upvote in bookmark.Upvotes)
+                            db.Upvotes.Remove(upvote);
+
+                    if (bookmark.BookmarkCategories != null)
+                        foreach (var bc in bookmark.BookmarkCategories)
+                            db.BookmarkCategories.Remove(bc);
+
+                    db.Bookmarks.Remove(bookmark);
+                }
+
 
             db.AppUsers.Remove(user);
             db.SaveChanges();

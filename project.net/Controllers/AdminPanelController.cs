@@ -43,7 +43,7 @@ namespace project.net.Controllers
 
             return View();
         }
-        [Route("admin/show-user/{userId}")]
+        [Route("/admin/show-user/{userId}")]
         public async Task<ActionResult> Show(string userId)
         {
             AppUser user = db.Users.Find(userId);
@@ -65,14 +65,13 @@ namespace project.net.Controllers
 
             // Cautam ID-ul rolului in baza de date
             var currentUserRole = _roleManager.Roles
-                                              .Where(r => roleNames.Contains(r.Name))
-                                              .Select(r => r.Id)
-                                              .First(); // Selectam 1 singur rol
-            ViewBag.UserRole = currentUserRole;
-
+                .FirstOrDefault(r => roleNames.Contains(r.Name)); // Selectam 1 singur rol
+            ViewBag.UserRole = currentUserRole != null ? currentUserRole.Id : "None";
             return View(user);
         }
+
         [HttpPost]
+        [Route("admin/edit-user/{id}")]
         public async Task<ActionResult> Edit(string id, AppUser newData, [FromForm] string newRole)
         {
             AppUser user = db.Users.Find(id);
@@ -108,40 +107,42 @@ namespace project.net.Controllers
         }
 
         [HttpPost]
+        [Route("admin/delete-user/{id}")]
         public IActionResult Delete(string id)
         {
             var user = db.Users
                          .Include("Bookmarks")
+                         .Include("Categories")
                          .Include("Comments")
                          .Include("Upvotes")
-                         .Include("BookmarkCategories")
-                         .Where(u => u.Id == id)
-                         .First();
+                         .Include("Bookmarks.BookmarkCategories")
+                         .FirstOrDefault(u => u.Id == id);
 
+            if (user == null) return NotFound();
             // Delete user bookmarks
-            if (user.Bookmarks.Count > 0)
-            {
-                foreach (var bookmark in user.Bookmarks)
-                {
-                    db.Bookmarks.Remove(bookmark);
-                }
-            }
-            // Delete user comments
-            if (user.Comments.Count > 0)
-            {
-                foreach (var comment in user.Comments)
-                {
-                    db.Comments.Remove(comment);
-                }
-            }
-            // Delete user upvotes 
-            if (user.Upvotes.Count > 0)
-            {
-                foreach (var upvote in user.Upvotes)
-                {
-                    db.Upvotes.Remove(upvote);
-                }
-            }
+            //if (user.Bookmarks.Count > 0)
+            //{
+            //    foreach (var bookmark in user.Bookmarks)
+            //    {
+            //        db.Bookmarks.Remove(bookmark);
+            //    }
+            //}
+            //// Delete user comments
+            //if (user.Comments.Count > 0)
+            //{
+            //    foreach (var comment in user.Comments)
+            //    {
+            //        db.Comments.Remove(comment);
+            //    }
+            //}
+            //// Delete user upvotes 
+            //if (user.Upvotes.Count > 0)
+            //{
+            //    foreach (var upvote in user.Upvotes)
+            //    {
+            //        db.Upvotes.Remove(upvote);
+            //    }
+            //}
             // Delete user saved bookmarks
             /*
             if (user.BookmarkCategories.Count > 0)

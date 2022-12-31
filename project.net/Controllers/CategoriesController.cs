@@ -80,6 +80,9 @@ namespace project.net.Controllers
         [Route("/edit-category")]
         public IActionResult Edit([FromBody] Category category)
         {
+            //todo ii dai voie si adminului
+            //todo uita-te si in view sa ii afisezi butoanele
+
             var userId = userManager.GetUserId(User);
             if (userId == null)
                 return NotFound();
@@ -100,6 +103,9 @@ namespace project.net.Controllers
         [Route("/delete-category")]
         public IActionResult Delete([FromBody] Category category)
         {
+            //todo ii dai voie si adminului
+            //todo uita-te si in view sa ii afisezi butoanele
+
             var userId = userManager.GetUserId(User);
             if (userId == null)
                 return NotFound();

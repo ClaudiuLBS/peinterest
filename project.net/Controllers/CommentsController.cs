@@ -66,6 +66,9 @@ namespace project.net.Controllers
         [Route("/edit-comment")]
         public IActionResult Edit([FromBody]Comment receivedComment)
         {
+            //todo ii dai voie si adminului
+            //todo uita-te si in view sa ii afisezi butoanele
+
             var userId = userManager.GetUserId(User);
             var comment = db.Comments.FirstOrDefault(c => c.Id == receivedComment.Id);
 
@@ -85,6 +88,9 @@ namespace project.net.Controllers
         [Route("/delete-comment")]
         public IActionResult Delete([FromBody]Comment receivedComment)
         {
+            //todo ii dai voie si adminului
+            //todo uita-te si in view sa ii afisezi butoanele
+
             var userId = userManager.GetUserId(User);
             var comment = db.Comments.FirstOrDefault(c => c.Id == receivedComment.Id);
 

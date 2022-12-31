@@ -102,8 +102,12 @@ namespace project.net.Controllers
         [HttpPost]
         [Route("/delete-bookmark/<bookmarkId:int>")]
         public IActionResult Delete(int bookmarkId)
-        {   
-             Bookmark bookmark = db.Bookmarks
+        {
+            //todo stergi comments, upvotes, BookmarkCategories
+            //todo ii dai voie si adminului sa acceseze actiunea
+            //todo intra si in view si afiseaza-i butoanele de delete/edit si adminului
+
+            Bookmark bookmark = db.Bookmarks
                  .Include("Comments")
                  .First(b => b.Id == bookmarkId);
 
@@ -120,6 +124,7 @@ namespace project.net.Controllers
         [Route("/edit-bookmark")]
         public IActionResult Edit([FromBody]Bookmark bookmark)
         {
+            //todo ii dai voie si adminului
             var actualBookmark = db.Bookmarks.FirstOrDefault(b => b.Id == bookmark.Id);
             var userId = userManager.GetUserId(User);
 

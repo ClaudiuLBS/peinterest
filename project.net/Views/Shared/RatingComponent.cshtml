@@ -4,9 +4,11 @@
 
 @{
     var userId = userManager.GetUserId(User);
-    Upvote? upvote = Model.Upvotes!.FirstOrDefault(uv => uv.UserId == userId);
-    var likes = Model.Upvotes!.Count(uv => uv.Rating == 1);
-    var dislikes = Model.Upvotes!.Count(uv => uv.Rating == -1);
+
+    var upvote = Model.Upvotes?.FirstOrDefault(uv => uv.UserId == userId);
+    var likes = Model.Upvotes?.Count(uv => uv.Rating == 1);
+    var dislikes = Model.Upvotes?.Count(uv => uv.Rating == -1);
+
     var rating = likes - dislikes;
 }
 <style>

@@ -47,8 +47,9 @@ namespace project.net.Controllers
             allBookmarks.Select(x => x.Upvotes).Load();
 
             foreach (var item in allBookmarks)
-                foreach (var comm in item.Comments)
-                    db.Entry(comm).Reference(c => c.User).Load();
+                if (item.Comments != null)
+                    foreach (var comm in item.Comments)
+                        db.Entry(comm).Reference(c => c.User).Load();
 
             ViewBag.Bookmarks = allBookmarks.ToList();
             ViewBag.CurrentBookmark = allBookmarks.FirstOrDefault(b => b.Id == bookmarkId);

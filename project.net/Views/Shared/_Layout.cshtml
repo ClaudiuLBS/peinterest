@@ -19,8 +19,7 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Bookmarks" asp-action="Index">Peinterest</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,7 +34,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="AdminPanel" asp-action="Index">Admin</a>
                     </li>
                     }
-
+                    <li class="nav-item">
+                        <div class="input-group">
+                            <input type="search" id="form1" class="form-control" placeholder="Search..."/>
+                            <button type="button" class="btn">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </li>
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>

@@ -154,15 +154,15 @@
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <ul class="dropdown-menu">
+                            <li class="dropdown-item" onclick="handleEditBookmark()">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </li>
                             <li class="dropdown-item">
                                 <form method="post" asp-controller="Bookmarks" asp-action="Delete" asp-route-bookmarkId="@bookmark.Id">
                                     <button class="btn" type="submit" style="padding-left: 0">
                                         <i class="bi bi-trash-fill"></i> Delete
                                     </button>
                                 </form>
-                            </li>
-                            <li class="dropdown-item" onclick="handleEditBookmark()">
-                                <i class="bi bi-pencil-square"></i> Edit
                             </li>
                         </ul>
                     </div>

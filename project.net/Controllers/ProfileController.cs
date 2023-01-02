@@ -75,14 +75,18 @@ namespace project.net.Controllers
                     .OrderByDescending(b => b.CreatedAt);
             }
 
-            bookmarks.Select(x => x.User).Load();
-            bookmarks.Select(x => x.Comments).Load();
-            bookmarks.Select(x => x.BookmarkCategories).Load();
-            bookmarks.Select(x => x.Upvotes).Load();
+            if (bookmarks.Any())
+            {
+                bookmarks.Select(x => x.User).Load();
+                bookmarks.Select(x => x.Comments).Load();
+                bookmarks.Select(x => x.BookmarkCategories).Load();
+                bookmarks.Select(x => x.Upvotes).Load();
+            }
 
             foreach (var bk in bookmarks)
-                foreach (var comm in bk.Comments)
-                    db.Entry(comm).Reference(c => c.User).Load();
+                if (bk?.Comments != null)
+                    foreach (var comm in bk.Comments)
+                        db.Entry(comm).Reference(c => c.User).Load();
 
 
             ViewBag.currentUser = user;

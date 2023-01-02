@@ -80,3 +80,23 @@
     //cancel button function
     cancelButton.onclick = exitEditSpace
 }
+
+//const handleSearch = () => {
+//    const searchBar = document.getElementById('search-bar');
+//    const bookmarks = document.getElementsByClassName('bookmark-card');
+//    console.log(bookmarks);
+//    searchBar.onkeyup = (event) => {
+//        for (let item of bookmarks) {
+//            const title = item.children[1].children[0].innerHTML;
+//            const description = item.children[1].children[1].innerHTML;
+//            if (title.includes(searchBar.value) || description.includes(searchBar.value))
+//                item.style.display = 'block';
+//            else
+//                item.style.display = 'none';
+//        }
+//    }
+//}
+
+//window.onload = () => {
+//    handleSearch();
+//}

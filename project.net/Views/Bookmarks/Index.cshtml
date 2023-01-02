@@ -19,7 +19,22 @@
         flex-wrap: wrap;
         justify-content: center;
     }
+    .card-img {
+        object-fit: cover;
+        height: 250px;
+    }
+    .card {
+        height: 400px !important;
+        margin: 20px;
+    }
+    .card-text {
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+    }
 </style>
+
 <div class="content">
     @if (User.Identity.IsAuthenticated)
     {

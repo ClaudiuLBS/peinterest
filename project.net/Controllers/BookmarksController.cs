@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Data;
+using Ganss.Xss;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
+using System.Linq;
 
 
 namespace project.net.Controllers
@@ -58,7 +62,76 @@ namespace project.net.Controllers
             var userId = userManager.GetUserId(User);
             ViewBag.MyCategories = db.Categories.Where(c => c.UserId == userId);
 
-            return View(bookmark);
+            //Motor de cautare
+
+            var search = "";
+            /*
+            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            {
+                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
+
+                List<int?> bookmarksIds = db.Bookmarks.Where
+                                        (
+                                         b => b.Title.Contains(search)
+                                         || b.Description.Contains(search)
+                                        ).Select(a => a.Id).ToList();
+                allBookmarks = db.Bookmarks.Where(b => bookmarksIds.Contains(b.Id))
+                                            .Include("User")
+                                            .Include("Comments")
+                                            .Include("Comments.User")
+                                            .Include("BookmarkCategories")
+                                            .Include("Upvotes")
+                                            .ToList();
+
+            }
+            */
+
+            ViewBag.SearchString = search;
+
+            // Afisare paginata
+            // afisam 20 de postari pe pagina
+            int _perPage = 3;
+
+            if(TempData.ContainsKey("message"))
+            {
+                ViewBag.message = TempData["message"].ToString();
+            }
+
+            //verificam de fiecare data cu count() cate postari sunt la momentul dat
+
+            int totalPosts = allBookmarks.Count();
+
+            // Se preia pagina curenta din View-ul asociat
+            // Numarul paginii este valoarea parametrului page din ruta
+
+            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+
+            var offset = 0;
+
+            // Se calculeaza offsetul in functie de numarul paginii la care suntem
+            if (!currentPage.Equals(0))
+            {
+                offset = (currentPage - 1) * _perPage;
+            }
+            var paginatedBookmarks = allBookmarks.Skip(offset).Take(_perPage);
+
+            // Preluam numarul ultimei pagini
+            ViewBag.lastPage = Math.Ceiling((float)totalPosts / (float)_perPage);
+
+            // Trimitem articolele cu ajutorul unui ViewBag catre View-ul corespunzator
+            ViewBag.Bookmarks = paginatedBookmarks;
+
+
+            if(search != "")
+            {
+                ViewBag.PaginationBaseUrl = "/?search=" + search + "&page";
+            }
+            else
+            {
+                ViewBag.PaginationBaseUrl = "/?page";
+            }
+
+            return View();
         }
 
 
@@ -163,5 +236,8 @@ namespace project.net.Controllers
 
             return new JsonResult(actualBookmark);
         }
+     
+
     }
+
 }

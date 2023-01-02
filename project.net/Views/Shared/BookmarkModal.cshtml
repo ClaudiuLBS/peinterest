@@ -218,7 +218,7 @@
                     {
                         <div id="comment_@(comment.Id)" class="comm">
                             <!-- COMMENT OPTIONS (DELETE, EDIT) -->
-                            @if (comment.UserId == userId)
+                            @if (comment.UserId == userId || User.IsInRole("Admin"))
                             {
                                 <div class="dropdown" style="position: absolute; bottom: 5px; right: 5px; margin: 0; padding: 0">
                                     <button class="btn dropdown-toggle comment-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">

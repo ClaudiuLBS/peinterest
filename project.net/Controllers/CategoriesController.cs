@@ -75,20 +75,17 @@ namespace project.net.Controllers
             return new JsonResult(new {action = "removed"});
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [Route("/edit-category")]
         public IActionResult Edit([FromBody] Category category)
         {
-            //todo ii dai voie si adminului
-            //todo uita-te si in view sa ii afisezi butoanele
-
             var userId = userManager.GetUserId(User);
             if (userId == null)
                 return NotFound();
 
             var actualCategory = db.Categories.FirstOrDefault(c => c.Id == category.Id);
-            if (actualCategory == null || actualCategory.UserId != userId)
+            if (actualCategory == null || (actualCategory.UserId != userId && !User.IsInRole("Admin")))
                 return NotFound();
 
             actualCategory.Name = category.Name;
@@ -98,20 +95,18 @@ namespace project.net.Controllers
             return Json(new { categoryName = category.Name });
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [Route("/delete-category")]
         public IActionResult Delete([FromBody] Category category)
         {
-            //todo ii dai voie si adminului
-            //todo uita-te si in view sa ii afisezi butoanele
 
             var userId = userManager.GetUserId(User);
             if (userId == null)
                 return NotFound();
 
             var actualCategory = db.Categories.FirstOrDefault(c => c.Id == category.Id);
-            if (actualCategory == null || actualCategory.UserId != userId)
+            if (actualCategory == null || (actualCategory.UserId != userId && !User.IsInRole("Admin")))
                 return NotFound();
 
             db.Categories.Remove(actualCategory);

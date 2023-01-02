@@ -69,7 +69,7 @@
                     <!-- CATEGORY NAME -->
                     <h5 id="category-title-@category.Id" class="card-title">@category.Name</h5>
                     <!-- CATEGORY OPTIONS -->
-                    @if (category.UserId == userId)
+                    @if (category.UserId == userId || User.IsInRole("Admin"))
                     {
                         <div class="dropdown">
                             <i class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" aria-expanded="false"></i>

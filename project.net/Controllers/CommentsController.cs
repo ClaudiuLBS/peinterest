@@ -61,19 +61,16 @@ namespace project.net.Controllers
             return Json(new { content = comment.Content });
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [Route("/edit-comment")]
         public IActionResult Edit([FromBody]Comment receivedComment)
         {
-            //todo ii dai voie si adminului
-            //todo uita-te si in view sa ii afisezi butoanele
-
             var userId = userManager.GetUserId(User);
             var comment = db.Comments.FirstOrDefault(c => c.Id == receivedComment.Id);
 
-            //aici vom testa si daca nu e admin
-            if (comment == null || comment.UserId != userId)
+            // Doar adminul si userul pot edita comentariile
+            if (comment == null || (comment.UserId != userId && !User.IsInRole("Admin")))
                 return NotFound();
 
             comment.Content = receivedComment.Content;
@@ -83,19 +80,16 @@ namespace project.net.Controllers
             return Json(new { commentId =  receivedComment.Id });
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [Route("/delete-comment")]
         public IActionResult Delete([FromBody]Comment receivedComment)
         {
-            //todo ii dai voie si adminului
-            //todo uita-te si in view sa ii afisezi butoanele
-
             var userId = userManager.GetUserId(User);
             var comment = db.Comments.FirstOrDefault(c => c.Id == receivedComment.Id);
-
-            //aici vom testa si daca nu e admin
-            if (comment == null || comment.UserId != userId)
+            
+            // Doar userul si adminul pot sterge comentarii
+            if (comment == null || (comment.UserId != userId && !User.IsInRole("Admin")))
                 return NotFound();
 
             db.Comments.Remove(comment);

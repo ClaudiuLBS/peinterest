@@ -104,10 +104,6 @@ namespace project.net.Controllers
         [Route("/delete-bookmark/<bookmarkId:int>")]
         public IActionResult Delete(int bookmarkId)
         {
-            //todo stergi comments, upvotes, BookmarkCategories V
-            //todo ii dai voie si adminului sa acceseze actiunea V ?
-            //todo intra si in view si afiseaza-i butoanele de delete/edit si adminului V
-
             Bookmark bookmark = db.Bookmarks
                      .Include("Comments")
                      .Include("Upvotes")
@@ -153,7 +149,6 @@ namespace project.net.Controllers
         [Route("/edit-bookmark")]
         public IActionResult Edit([FromBody]Bookmark bookmark)
         {
-            //todo ii dai voie si adminului V
             var actualBookmark = db.Bookmarks.FirstOrDefault(b => b.Id == bookmark.Id);
             var userId = userManager.GetUserId(User);
 

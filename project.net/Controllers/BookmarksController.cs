@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Data;
 
 
 namespace project.net.Controllers
@@ -98,20 +99,48 @@ namespace project.net.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [Route("/delete-bookmark/<bookmarkId:int>")]
         public IActionResult Delete(int bookmarkId)
         {
-            //todo stergi comments, upvotes, BookmarkCategories
-            //todo ii dai voie si adminului sa acceseze actiunea
-            //todo intra si in view si afiseaza-i butoanele de delete/edit si adminului
+            //todo stergi comments, upvotes, BookmarkCategories V
+            //todo ii dai voie si adminului sa acceseze actiunea V ?
+            //todo intra si in view si afiseaza-i butoanele de delete/edit si adminului V
 
             Bookmark bookmark = db.Bookmarks
-                 .Include("Comments")
-                 .First(b => b.Id == bookmarkId);
+                     .Include("Comments")
+                     .Include("Upvotes")
+                     .Include("BookmarkCategories")
+                     .First(b => b.Id == bookmarkId);
 
-            if (userManager.GetUserId(User) != bookmark.UserId)
+            // Delete bookmark comments
+            if (bookmark.Comments.Count > 0)
+            {
+                foreach (var comment in bookmark.Comments)
+                {
+                    db.Comments.Remove(comment);
+                }
+            }
+            // Delete bookmark upvotes
+            if (bookmark.Upvotes.Count > 0)
+            {
+                foreach (var upvote in bookmark.Upvotes)
+                {
+                    db.Upvotes.Remove(upvote);
+                }
+            }
+            // Delete bookmark from users saved bookmarks
+            if (bookmark.BookmarkCategories.Count > 0)
+            {
+                foreach (var savedbookmark in bookmark.BookmarkCategories)
+                {
+                    db.BookmarkCategories.Remove(savedbookmark);
+                }
+            }
+
+
+            if (userManager.GetUserId(User) != bookmark.UserId && !User.IsInRole("Admin"))
                 return RedirectToAction("Index");
 
             db.Bookmarks.Remove(bookmark);
@@ -119,16 +148,16 @@ namespace project.net.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost]
         [Route("/edit-bookmark")]
         public IActionResult Edit([FromBody]Bookmark bookmark)
         {
-            //todo ii dai voie si adminului
+            //todo ii dai voie si adminului V
             var actualBookmark = db.Bookmarks.FirstOrDefault(b => b.Id == bookmark.Id);
             var userId = userManager.GetUserId(User);
 
-            if (actualBookmark == null || actualBookmark?.UserId != userId)
+            if (actualBookmark == null || (actualBookmark?.UserId != userId && !User.IsInRole("Admin")))
                 return NotFound();
 
             actualBookmark.Title = bookmark.Title;

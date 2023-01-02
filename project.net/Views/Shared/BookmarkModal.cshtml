@@ -147,7 +147,7 @@
         <div style="grid-area: header" class="my-header">
             <div style="display: flex; align-items: center">
                 <!-- BOOKMARK OPTIONS (DELETE, EDIT) -->
-                @if (bookmark.UserId == userId)
+                @if (bookmark.UserId == userId || User.IsInRole("Admin"))
                 {
                     <div class="dropdown">
                         <button id="bookmark-menu" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

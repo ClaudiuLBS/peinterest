@@ -6,11 +6,17 @@
     }
 </style>
 @using (Html.BeginForm(
-    actionName: "New", 
-    controllerName: "Bookmarks",
-    method: FormMethod.Post, 
+     "New", 
+    "Bookmarks",
+    new
+    {
+       page = Context.Request.Query["page"],
+       search = Context.Request.Query["search"]
+    },
+     FormMethod.Post, 
+    null,
     new {enctype="multipart/form-data"}
-)) {
+    )) {
     <div class="card card-container" style="width: 18rem;">
         <div class="card-body">
             @Html.LabelFor(b => b.Title, "Titlu", new { @class = "card-title"})

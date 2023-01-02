@@ -36,16 +36,8 @@ namespace project.net.Controllers
         [Route("")]
         public IActionResult Index([FromQuery(Name = "bookmarkId")] int? bookmarkId)
         {
-            Bookmark bookmark = new();
-            //var allBookmarks = db.Bookmarks
-            //    .Include("User")
-            //    .Include("Comments")
-            //    .Include("Comments.User")
-            //    .Include("BookmarkCategories")
-            //    .Include("Upvotes")
-            //    .ToList();
 
-            var allBookmarks = db.Bookmarks;
+            var allBookmarks = db.Bookmarks.OrderByDescending(b => b.CreatedAt);
             allBookmarks.Select(x => x.User).Load();
             allBookmarks.Select(x => x.Comments).Load();
             allBookmarks.Select(x => x.BookmarkCategories).Load();
@@ -56,7 +48,6 @@ namespace project.net.Controllers
                     foreach (var comm in item.Comments)
                         db.Entry(comm).Reference(c => c.User).Load();
 
-            ViewBag.Bookmarks = allBookmarks.ToList();
             ViewBag.CurrentBookmark = allBookmarks.FirstOrDefault(b => b.Id == bookmarkId);
 
             var userId = userManager.GetUserId(User);
@@ -65,32 +56,24 @@ namespace project.net.Controllers
             //Motor de cautare
 
             var search = "";
-            /*
+            
             if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
             {
                 search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
 
-                List<int?> bookmarksIds = db.Bookmarks.Where
-                                        (
-                                         b => b.Title.Contains(search)
-                                         || b.Description.Contains(search)
-                                        ).Select(a => a.Id).ToList();
-                allBookmarks = db.Bookmarks.Where(b => bookmarksIds.Contains(b.Id))
-                                            .Include("User")
-                                            .Include("Comments")
-                                            .Include("Comments.User")
-                                            .Include("BookmarkCategories")
-                                            .Include("Upvotes")
-                                            .ToList();
-
+                allBookmarks = allBookmarks
+                    .Where(b => b.Title.Contains(search) || b.Description.Contains(search))
+                    .OrderBy(b => b.CreatedAt);
             }
-            */
+            
 
             ViewBag.SearchString = search;
 
             // Afisare paginata
             // afisam 20 de postari pe pagina
-            int _perPage = 3;
+            int _perPage = 10;
+            if (userManager.GetUserId(User) != null)
+                _perPage = 9;
 
             if(TempData.ContainsKey("message"))
             {
@@ -130,7 +113,7 @@ namespace project.net.Controllers
             {
                 ViewBag.PaginationBaseUrl = "/?page";
             }
-
+            
             return View();
         }
 
@@ -142,21 +125,87 @@ namespace project.net.Controllers
         [Route("")]
         public IActionResult New(Bookmark bookmark)
         {
-            var userId = userManager.GetUserId(User);
-            ViewBag.MyCategories = db.Categories.Where(c => c.UserId == userId);
-
-            ViewBag.Bookmarks = db.Bookmarks
-                .Include("User")
-                .Include("Comments")
-                .Include("Comments.User")
-                .Include("BookmarkCategories")
-                .ToList();
-
             bookmark.UserId = userManager.GetUserId(User);
             bookmark.CreatedAt = DateTime.Now;
 
             if (!ModelState.IsValid)
+            {
+                var allBookmarks = db.Bookmarks.OrderByDescending(b => b.CreatedAt);
+                allBookmarks.Select(x => x.User).Load();
+                allBookmarks.Select(x => x.Comments).Load();
+                allBookmarks.Select(x => x.BookmarkCategories).Load();
+                allBookmarks.Select(x => x.Upvotes).Load();
+
+                foreach (var item in allBookmarks)
+                    if (item.Comments != null)
+                        foreach (var comm in item.Comments)
+                            db.Entry(comm).Reference(c => c.User).Load();
+
+                var userId = userManager.GetUserId(User);
+                ViewBag.MyCategories = db.Categories.Where(c => c.UserId == userId);
+
+                //Motor de cautare
+
+                var search = "";
+
+                if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+                {
+                    search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
+
+                    allBookmarks = allBookmarks
+                        .Where(b => b.Title.Contains(search) || b.Description.Contains(search))
+                        .OrderBy(b => b.CreatedAt);
+                }
+
+
+                ViewBag.SearchString = search;
+
+                // Afisare paginata
+                // afisam 20 de postari pe pagina
+                int _perPage = 10;
+                if (userManager.GetUserId(User) != null)
+                    _perPage = 9;
+
+                if (TempData.ContainsKey("message"))
+                {
+                    ViewBag.message = TempData["message"].ToString();
+                }
+
+                //verificam de fiecare data cu count() cate postari sunt la momentul dat
+
+                int totalPosts = allBookmarks.Count();
+
+                // Se preia pagina curenta din View-ul asociat
+                // Numarul paginii este valoarea parametrului page din ruta
+
+                var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+
+                var offset = 0;
+
+                // Se calculeaza offsetul in functie de numarul paginii la care suntem
+                if (!currentPage.Equals(0))
+                {
+                    offset = (currentPage - 1) * _perPage;
+                }
+                var paginatedBookmarks = allBookmarks.Skip(offset).Take(_perPage);
+
+                // Preluam numarul ultimei pagini
+                ViewBag.lastPage = Math.Ceiling((float)totalPosts / (float)_perPage);
+
+                // Trimitem articolele cu ajutorul unui ViewBag catre View-ul corespunzator
+                ViewBag.Bookmarks = paginatedBookmarks;
+
+
+                if (search != "")
+                {
+                    ViewBag.PaginationBaseUrl = "/?search=" + search + "&page";
+                }
+                else
+                {
+                    ViewBag.PaginationBaseUrl = "/?page";
+                }
                 return View("Index", bookmark);
+            }
 
             var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
             var fileName = Guid.NewGuid() + "_" + bookmark.File?.FileName;

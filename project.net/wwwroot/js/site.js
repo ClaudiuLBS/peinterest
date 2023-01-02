@@ -25,6 +25,19 @@ const closeBookmarkModal = () => {
     window.location.href = newUrl;
 }
 
+function updateQueryStringParameter(key, value) {
+    const uri = window.location.href
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+        window.location.href = uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+        window.location.href = uri + separator + key + "=" + value;
+    }
+}
+
+
 const getHeight = () => {
     divElement = document.querySelector("#img-container");
     if (!divElement) return;
@@ -33,11 +46,18 @@ const getHeight = () => {
     document.body.classList.add('stop-scrolling');
 }
 
-const handleRating = (userId, value, bookmarkId) => {
-    fetch()
+const handleSearchBar = () => {
+    const searchBar = document.getElementById('search-bar');
+    const searchBarButton = document.getElementById('search-bar-button');
+    searchBarButton.onclick = () => updateQueryStringParameter('search', searchBar.value);
+    searchBar.onkeydown = (event) => {
+        if (event.key == 'Enter')
+            updateQueryStringParameter('search', searchBar.value);
+    }
 }
 
 window.onload = () => {
     getHeight();
+    handleSearchBar();
 }
 window.onresize = getHeight;

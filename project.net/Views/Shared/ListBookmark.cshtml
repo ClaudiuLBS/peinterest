@@ -1,5 +1,23 @@
 ﻿@model Bookmark
-
+<style>
+    .card-img {
+        object-fit: cover;
+        height: 250px;
+    }
+    .card {
+        height: 400px !important;
+        margin: 20px;
+    }
+    .card:hover {
+        cursor: pointer;
+    }
+    .card-text {
+        white-space: nowrap;
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+    }
+</style>
 <a id="bookmark_@Model.Id" onclick="updateQueryStringParameter('bookmarkId', @Model.Id)" class="card bookmark-card" style="width: 18rem;">
     <img src="/images/@Model.Image" class="card-img" alt="not found">
     <div class="card-body">

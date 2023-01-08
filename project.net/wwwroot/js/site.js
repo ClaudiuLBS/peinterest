@@ -37,11 +37,14 @@ function updateQueryStringParameter(key, value) {
     }
 }
 
-
 const getHeight = () => {
+    if (screen.width <= 1000)
+        document.querySelector(".modal-img").style.maxHeight = "0px";
+   
     divElement = document.querySelector("#img-container");
     if (!divElement) return;
     elemHeight = divElement.offsetHeight;
+    console.log(elemHeight)
     document.querySelector(".modal-img").style.maxHeight = elemHeight + "px";
     document.body.classList.add('stop-scrolling');
 }

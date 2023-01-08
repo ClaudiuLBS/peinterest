@@ -32,16 +32,32 @@ namespace project.net.Controllers
             this.userManager = userManager;
         }
 
+        int GetRating(Bookmark b)
+        {
+            var upvotes = db.Upvotes.Where(u => u.BookmarkId == b.Id);
+            var rating = upvotes.Sum(u => u.Rating);
+            if (rating == null)
+                return 0;
+
+            return (int)rating;
+        }
         // Afisam pe pagina principala toate bookmarkurile in functie de popularitate
         [Route("")]
-        public IActionResult Index([FromQuery(Name = "bookmarkId")] int? bookmarkId)
+        public IActionResult Index(
+            [FromQuery(Name = "bookmarkId")] int? bookmarkId, 
+            [FromQuery(Name = "sort")] string? sort
+        )
         {
 
-            var allBookmarks = db.Bookmarks.OrderByDescending(b => b.CreatedAt);
-            allBookmarks.Select(x => x.User).Load();
-            allBookmarks.Select(x => x.Comments).Load();
-            allBookmarks.Select(x => x.BookmarkCategories).Load();
-            allBookmarks.Select(x => x.Upvotes).Load();
+            var dbBookmarks = db.Bookmarks.OrderByDescending(b => b.CreatedAt);
+
+            dbBookmarks.Select(x => x.User).Load();
+            dbBookmarks.Select(x => x.Comments).Load();
+            dbBookmarks.Select(x => x.BookmarkCategories).Load();
+            dbBookmarks.Select(x => x.Upvotes).Load();
+            var allBookmarks = (IEnumerable<Bookmark>)dbBookmarks.OrderByDescending(b => b.CreatedAt);
+            if (sort == "rating")
+                allBookmarks = allBookmarks.OrderByDescending(GetRating);
 
             foreach (var item in allBookmarks)
                 if (item.Comments != null)
@@ -62,8 +78,7 @@ namespace project.net.Controllers
                 search = Convert.ToString(HttpContext.Request.Query["search"]).Trim(); // eliminam spatiile libere 
 
                 allBookmarks = allBookmarks
-                    .Where(b => b.Title.Contains(search) || b.Description.Contains(search))
-                    .OrderBy(b => b.CreatedAt);
+                    .Where(b => b.Title.Contains(search) || (b.Description != null && b.Description.Contains(search)));
             }
             
 
@@ -97,7 +112,7 @@ namespace project.net.Controllers
                 offset = (currentPage - 1) * _perPage;
             }
             var paginatedBookmarks = allBookmarks.Skip(offset).Take(_perPage);
-
+            
             // Preluam numarul ultimei pagini
             ViewBag.lastPage = Math.Ceiling((float)totalPosts / (float)_perPage);
 

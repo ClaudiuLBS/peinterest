@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - project.net</title>
+    <title>@ViewData["Title"] | peinterest</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -27,15 +27,27 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Bookmarks" asp-action="Index">Home</a>
-                    </li>
                     @if (User.IsInRole("Admin"))
                     {
                     <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AdminPanel" asp-action="Index">Admin</a>
                     </li>
                     }
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" style="margin: 0 1em" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                sort by
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item" onclick="updateQueryStringParameter('sort', 'rating')">
+                                    rating
+                                </li>
+                                <li class="dropdown-item" onclick="updateQueryStringParameter('sort', 'postdate')">
+                                    post date
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <div class="input-group">
                             <input type="search" id="search-bar" class="form-control" placeholder="Search..."/>
@@ -44,6 +56,7 @@
                             </button>
                         </div>
                     </li>
+                    
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>
@@ -58,7 +71,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container"> 
-        &copy; 2022 - project.net - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        &copy; 2022 - peinterest
     </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

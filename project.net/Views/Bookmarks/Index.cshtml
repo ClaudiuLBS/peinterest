@@ -7,6 +7,7 @@
         Bookmark = ViewBag.CurrentBookmark,
         Categories = ViewBag.MyCategories
     };
+    ViewData["Title"] = "home";
 }
 
 <style>
@@ -18,23 +19,6 @@
         -webkit-flex-wrap: wrap;
         flex-wrap: wrap;
         justify-content: center;
-    }
-    .card-img {
-        object-fit: cover;
-        height: 250px;
-    }
-    .card {
-        height: 400px !important;
-        margin: 20px;
-    }
-    .card:hover {
-        cursor: pointer;
-    }
-    .card-text {
-        white-space: nowrap;
-        overflow: hidden;
-        display: block;
-        text-overflow: ellipsis;
     }
 </style>
 

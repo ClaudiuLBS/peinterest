@@ -208,9 +208,12 @@
         <div id="right-modal">
             <div>
                 <!-- DESCRIPTION -->
-                <div id="description-section" class="comm" style="padding: 1em">
-                    <p style="overflow-wrap: break-word">@bookmark.Description</p>
-                </div>
+                @if (!string.IsNullOrEmpty(bookmark.Description))
+                {
+                    <div id="description-section" class="comm" style="padding: 1em">
+                        <p style="overflow-wrap: break-word">@bookmark.Description</p>
+                    </div>
+                }
                 <!-- COMMENTS -->
                 @if (bookmark.Comments != null)
                 {

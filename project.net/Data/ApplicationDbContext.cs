@@ -34,7 +34,6 @@ namespace project.net.Data
                 .WithMany(c => c.BookmarkCategories)
                 .HasForeignKey(bc => bc.CategoryId);
 
-
             builder.Entity<Upvote>().HasKey(u => new {
                 u.UserId,
                 u.BookmarkId

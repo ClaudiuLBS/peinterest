@@ -20,6 +20,9 @@
         flex-wrap: wrap;
         justify-content: center;
     }
+    .page-link:hover {
+        cursor: pointer;
+    }
 </style>
 
 
@@ -37,7 +40,7 @@
 
 @* Afisarea paginata a articolelor *@
 
-<nav aria-label="Page navigation example">
+<nav aria-label="Page navigation example" style="z-index: -10">
     <ul class="pagination" style="display: flex; justify-content: center">
         <li class="page-item">
             <a class="page-link" href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
@@ -47,7 +50,7 @@
 
         @for (int i = 1; i <= ViewBag.lastPage; i++)
         {
-            <li class="page-item"> <a class="page-link" href="@ViewBag.PaginationBaseUrl=@i">@(i)</a> </li>
+            <li class="page-item"> <a class="page-link" onclick="updateQueryStringParameter('page', @i)">@(i)</a> </li>
         }
 
         <li class="page-item">

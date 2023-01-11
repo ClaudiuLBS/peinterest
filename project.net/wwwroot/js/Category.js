@@ -11,6 +11,8 @@ const addNewCategory = (event, bookmarkId) => {
         BookmarkId: bookmarkId
     }
 
+    if (categoryObj.Name.length == 0) return;
+
     $.ajax({
         url: "/add-category",
         data: JSON.stringify(categoryObj),

@@ -12,6 +12,7 @@
 }
 <style>
     .my-modal {
+        z-index: 100;
         position: absolute;
         width: 60vw;
         height: 70vh;
@@ -30,7 +31,6 @@
     .modal-img {
         flex: 1;
         max-width: 100%;
-        max-height: 40vh;
         object-fit: contain;
     }
     #img-container {
@@ -39,6 +39,7 @@
         justify-content: center;
         background: #000;
         grid-area: img;
+        position: relative;
     }
     #comment-section {
         display: flex;
@@ -139,6 +140,29 @@
     .comment-menu:after{
         display: none;
     }
+    #modal-header {
+        display: flex;
+        align-items: center;
+    }
+    @@media only screen and (max-width: 1000px) {
+        #modal-header {
+            flex-direction: column
+        }
+        .my-modal {
+            width: 95%;
+            height: 90vh;
+            grid-template-rows: 1fr 5fr 5fr 1fr;
+            grid-template-columns: 1fr;
+            grid-template-areas: 
+               "header header"
+               "img img"
+               "com com"
+               "newcom newcom";
+        }
+        #header-bar {
+            display: none;
+        }
+    }
 </style>
 
 @if (bookmark != null)
@@ -190,9 +214,10 @@
             </div>
             
             <!-- TITLE -->
-            <div style="display: flex; align-items: center">
+            <div id="modal-header">
                 <div id="title-section">@bookmark.Title</div>
-                <div><a href="/u/@bookmark.UserId">&nbsp;| @bookmark.User.UserName</a></div>
+                <div id="header-bar">&nbsp;|&nbsp;</div>
+                <div><a href="/u/@bookmark.UserId"> @bookmark.User.UserName</a></div>
             </div>
 
             <!-- CLOSE BUTTON -->
@@ -208,9 +233,12 @@
         <div id="right-modal">
             <div>
                 <!-- DESCRIPTION -->
-                <div id="description-section" class="comm" style="padding: 1em">
-                    <p style="overflow-wrap: break-word">@bookmark.Description</p>
-                </div>
+                @if (!string.IsNullOrEmpty(bookmark.Description))
+                {
+                    <div id="description-section" class="comm" style="padding: 1em">
+                        <p style="overflow-wrap: break-word">@bookmark.Description</p>
+                    </div>
+                }
                 <!-- COMMENTS -->
                 @if (bookmark.Comments != null)
                 {

@@ -7,6 +7,7 @@
         Bookmark = ViewBag.CurrentBookmark,
         Categories = ViewBag.MyCategories
     };
+    ViewData["Title"] = "home";
 }
 
 <style>
@@ -19,22 +20,8 @@
         flex-wrap: wrap;
         justify-content: center;
     }
-    .card-img {
-        object-fit: cover;
-        height: 250px;
-    }
-    .card {
-        height: 400px !important;
-        margin: 20px;
-    }
-    .card:hover {
+    .page-link:hover {
         cursor: pointer;
-    }
-    .card-text {
-        white-space: nowrap;
-        overflow: hidden;
-        display: block;
-        text-overflow: ellipsis;
     }
 </style>
 
@@ -53,7 +40,7 @@
 
 @* Afisarea paginata a articolelor *@
 
-<nav aria-label="Page navigation example">
+<nav aria-label="Page navigation example" style="z-index: -10">
     <ul class="pagination" style="display: flex; justify-content: center">
         <li class="page-item">
             <a class="page-link" href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
@@ -63,7 +50,7 @@
 
         @for (int i = 1; i <= ViewBag.lastPage; i++)
         {
-            <li class="page-item"> <a class="page-link" href="@ViewBag.PaginationBaseUrl=@i">@(i)</a> </li>
+            <li class="page-item"> <a class="page-link" onclick="updateQueryStringParameter('page', @i)">@(i)</a> </li>
         }
 
         <li class="page-item">

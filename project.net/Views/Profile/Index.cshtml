@@ -2,6 +2,7 @@
 @inject UserManager<AppUser> userManager
 
 @{
+    ViewData["Title"] = "profile";
     AppUser user = ViewBag.user;
     var userId = userManager.GetUserId(User);
 }
